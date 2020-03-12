@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import os
 from database import db
 from routes.auth.auth import auth_bp
