@@ -1,15 +1,17 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, request
 from functools import wraps
-
+from forms.forms import *
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register')
+@auth_bp.route('/register', methods=["GET", "POST"])
 def register():
-    return render_template('register.html')
+    form = RegistrationForm(request.form)
+    return render_template('register.html', form=form)
 
-@auth_bp.route('/login')
+@auth_bp.route('/login', methods=["GET", "POST"])
 def login():
-    return render_template('login.html')
+    form = LoginForm(request.form)
+    return render_template('login.html', form=form)
 
 @auth_bp.route('/change-password')
 def change_password():
