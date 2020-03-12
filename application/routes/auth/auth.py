@@ -87,7 +87,8 @@ def change_password():
 @auth_bp.route('/logout')
 def logout():
     session_id = request.cookies.get('session_id')
-    db.delete("session:" + session_id)
+    if session_id is not None:
+        db.delete("session:" + session_id)
     session["logged_in"] = False
     response = make_response(redirect(url_for('dashboard.index')))
     response.set_cookie("session_id", "", expires=0)
@@ -104,8 +105,8 @@ def authorization_required(f):
         username = get_username(session_id)
         if not username or username == 'None':
             session["logged_in"] = False
-            response = redirect(url_for('login'))
+            response = redirect(url_for('auth.login'))
             response.set_cookie('session_id','', expires=0)
-            return redirect(url_for('login'))
+            return response
         return f(*args, **kwds)
     return authorization_decorator

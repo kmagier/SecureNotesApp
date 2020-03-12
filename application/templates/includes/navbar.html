@@ -6,21 +6,18 @@
     <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="{{url_for('dashboard.index')}}">Home</a>
             </li>
-            {% if not session.logged_in %}
+            {% if session.logged_in %}
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('auth.register')}}">Sign up</a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-                <!-- <a class="nav-link" href="">Add note</a> -->
+                <a class="nav-link" href="{{url_for('notes.add_note')}}">Add note</a>
             </li>
             <li class="nav-item">
-                <!-- <a class="nav-link" href="">Private notes</a> -->
+                <a class="nav-link" href="{{url_for('notes.private_notes')}}">Private notes</a>
             </li>
+            {% endif %} 
             <li class="nav-item">
-                <!-- <a class="nav-link" href="">Public notes</a> -->
+                <a class="nav-link" href="{{url_for('notes.public_notes')}}">Public notes</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -34,6 +31,9 @@
             {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('auth.login')}}">Log in</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('auth.register')}}">Sign up</a>
+            </li>
             {% endif %}
             </li>
         </ul>

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if not notes %}
+<h3>No notes added yet.</h3>
+{% else %}
+<div id="table">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>CONTENT</th>
+                <th>OWNER</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in notes %}
+            <tr>
+                <td>{{note.content}}</td>
+                <td>{{note.owner}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
