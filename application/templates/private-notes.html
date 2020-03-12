@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if not notes %}
+<h3>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h3>
+{% else %}
+<div id="table">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>CONTENT</th>
+                <th>OWNER</th>
+                <th>IS PUBLIC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in notes %}
+            <tr>
+                <td>{{note.content}}</td>
+                <td>{{note.owner}}</td>
+                <td>
+                    {% if note.isPublic == 'False' %}
+                    <a href="{{url_for('notes.make_public', note_id=note.noteID)}}">Make public</a> 
+                    {% else %}
+                    Note is public
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
