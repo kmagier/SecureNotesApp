@@ -1,6 +1,10 @@
 flask
 redis
+flask-sqlalchemy
+psycopg2
 requests
 authlib
 flask-wtf
+flask-login
 bcrypt
+email_validator

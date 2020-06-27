@@ -2,16 +2,21 @@
 
 {% block content %}
 <div class="form-group purple-border">
-<form action="{{url_for('notes.add_note')}}" method="POST">
-    
-    {{ form.hidden_tag() }}
-    {{ form.note.label }} <br>
-    {{ form.note(class_="form-control") }} 
-    {{ form.submit(class_="btn btn-success") }} <br>
-    {% for error in form.note.errors %}
+    <form action="{{url_for('notes.add_note')}}" method="POST">
+        {{ form.hidden_tag() }}
+        {% for error in form.description.errors %}
         <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-    
-</form>
+        {% endfor %}
+        <div class="card">
+            <div class="card-header">
+                {{ form.title(placeholder="Title")}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Note description</h5>
+                <p class="card-text">{{ form.description(class_="form-control", placeholder="Description") }}</p>
+                {{ form.submit(class_="btn btn-success") }}
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock %}

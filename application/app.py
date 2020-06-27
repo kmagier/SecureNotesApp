@@ -1,12 +1,30 @@
-from flask import Flask, render_template
+from flask import (Flask, request, render_template, redirect, url_for,
+    send_file, make_response, session, flash)
 import os
+import psycopg2
 from database import db
-from routes.auth.auth import auth_bp
-from routes.dashboard.dashboard import dashboard_bp
-from routes.notes.notes import notes_bp
+from config import *
+from flask_login import LoginManager
+
 
 app = Flask(__name__, static_url_path="")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+login_manager=LoginManager()
+db.app = app
+
+
+from routes.auth.auth import auth_bp
+from routes.dashboard.dashboard import dashboard_bp
+from routes.notes.notes import notes_bp
+from models.user import User
+from models.note import Note
+db.init_app(app)
+login_manager.init_app(app)  
+db.create_all() 
+
 
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(auth_bp)

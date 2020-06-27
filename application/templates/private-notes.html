@@ -4,7 +4,62 @@
 {% if not notes %}
 <h3>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h3>
 {% else %}
-<div id="table">
+{% for note in notes %}
+<!-- <div class="card">
+    <div class="card-header">
+        {{note.owner_id}}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Description:</h5>
+        <p class="card-text">{{note.description}}</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+</div> -->
+
+<div class="accordion" id="notesAccordion">
+    <div class="card">
+        <div class="card-header" id="heading{{note.id}}">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                    data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
+                    {{note.title}}
+                    <button onClick="delete_note(this);"  data-id="{{note.id}}" class="delete btn btn-danger btn-sm">Delete</button>
+            </h2>
+        </div>
+        <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
+            <div class="card-body">
+                {{note.description}}
+            </div>
+            {% if note.is_public == False %}
+            <a href="{{url_for('notes.make_public', note_id=note.id)}}" class="btn btn-primary">Make public</a>
+            {% else %}
+            <a href="{{url_for('notes.make_private', note_id=note.id)}}" class="btn btn-primary">Make private</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<script>
+const BASE_URL = 'https://localhost:8080/private-notes'
+
+
+function delete_note(d) {
+    let item_id = d.getAttribute("data-id");
+    fetch(BASE_URL + '/delete/' + item_id, {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(result => location.reload())
+        .catch(err => console.log(err))
+}
+</script>
+{% endblock %}
+
+
+
+<!-- <div id="table">
     <table class="table mb-0">
         <thead>
             <tr>
@@ -16,7 +71,7 @@
         <tbody>
             {% for note in notes %}
             <tr>
-                <td>{{note.content}}</td>
+                <td>{{note.description}}</td>
                 <td>{{note.owner}}</td>
                 <td>
                     {% if note.isPublic == 'False' %}
@@ -29,6 +84,4 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
-{% endif %}
-{% endblock %}
+</div> -->
