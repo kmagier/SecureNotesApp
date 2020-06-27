@@ -1,26 +1,29 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
 {% if not notes %}
 <h3>No notes added yet.</h3>
 {% else %}
-<div id="table">
-    <table class="table mb-0">
-        <thead>
-            <tr>
-                <th>CONTENT</th>
-                <th>OWNER</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for note in notes %}
-            <tr>
-                <td>{{note.content}}</td>
-                <td>{{note.owner}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+{% for note in notes %}
+<div class="accordion" id="notesAccordion">
+    <div class="card">
+        <div class="card-header" id="heading{{note.id}}">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                    data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
+                    {{note.title}}
+                </button>
+            </h2>
+        </div>
+        <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
+            <div class="card-body">
+                {{note.description}}
+            </div>
+        </div>
+    </div>
 </div>
+{% endfor %}
 {% endif %}
 {% endblock %}

@@ -9,6 +9,18 @@ services:
     volumes:
       - ./application:/application
     env_file: 
-        - ./application/.env
+        - ./application/.env   
   redis:
     image: "redis:alpine"
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: psql
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+    ports:
+        - 5432:5432
+    env_file: 
+        - ./application/.env
+volumes:
+  pgdata:

@@ -4,6 +4,6 @@ ENV FLASK_APP app.py
 ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 80
 COPY ./application /application
-RUN apk add --no-cache gcc musl-dev linux-headers openssl-dev libffi-dev
+RUN apk add --no-cache gcc musl-dev linux-headers openssl-dev libffi-dev postgresql-dev
 RUN pip install -r requirements.txt
 CMD ["flask", "run", "--cert=KM.crt", "--key=KM.key"]

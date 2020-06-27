@@ -1,3 +1,3 @@
-import redis
+from flask_sqlalchemy import SQLAlchemy
 
-db = redis.Redis(host = "redis", port = 6379, decode_responses=True)
+db = SQLAlchemy()
