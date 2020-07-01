@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, EqualTo, Email, Length, ValidationError
 import re
 from database import db
@@ -31,6 +31,7 @@ class RegistrationForm(FlaskForm):
 class NoteForm(FlaskForm):
     title = StringField('Title', validators=[Length(min=1, max=150)])
     description = TextAreaField('Description', validators=[Length(min=1, max=150)], render_kw={"rows": 1})
+    attachment = FileField('File')
     submit = SubmitField('Post')
 
 class PasswordChangeForm(FlaskForm):

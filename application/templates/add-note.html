@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="form-group purple-border">
-    <form action="{{url_for('notes.add_note')}}" method="POST">
+    <form action="{{url_for('notes.add_note')}}" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {% for error in form.description.errors %}
         <span style="color: red;">[{{ error }}]</span>
@@ -14,6 +14,8 @@
             <div class="card-body">
                 <h5 class="card-title">Note description</h5>
                 <p class="card-text">{{ form.description(class_="form-control", placeholder="Description") }}</p>
+                <h5 class="card-title">File</h5>
+                {{ form.attachment }} <br>
                 {{ form.submit(class_="btn btn-success") }}
             </div>
         </div>
