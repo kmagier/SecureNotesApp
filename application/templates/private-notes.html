@@ -23,7 +23,12 @@
                 <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
                     data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
                     {{note.title}}
-                    <button onClick="delete_note(this);"  data-id="{{note.id}}" class="delete btn btn-danger btn-sm">Delete</button>
+                    <button onClick="delete_note(this);" data-id="{{note.id}}"
+                        class="delete btn btn-danger btn-sm">Delete</button>
+                        {% if note.attachment_hash %}
+                    <a href="{{url_for('notes.download_file', file_hash = note.attachment_hash)}}"
+                        class="btn btn-primary btn-sm">Download</a>
+                        {% endif %}
             </h2>
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
@@ -41,19 +46,19 @@
 {% endfor %}
 {% endif %}
 <script>
-const BASE_URL = 'https://localhost:8080/private-notes'
+    const BASE_URL = 'https://localhost:8080/private-notes'
 
 
-function delete_note(d) {
-    let item_id = d.getAttribute("data-id");
-    fetch(BASE_URL + '/delete/' + item_id, {
-        method: 'DELETE',
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(result => location.reload())
-        .catch(err => console.log(err))
-}
+    function delete_note(d) {
+        let item_id = d.getAttribute("data-id");
+        fetch(BASE_URL + '/delete/' + item_id, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(result => location.reload())
+            .catch(err => console.log(err))
+    }
 </script>
 {% endblock %}
 
