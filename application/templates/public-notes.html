@@ -19,7 +19,11 @@
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
             <div class="card-body">
-                {{note.description}}
+                {{note.description}} <br>
+                {% if note.attachment_hash %}
+                <a href="{{url_for('notes.download_file_public', file_hash = note.attachment_hash)}}"
+                    class="btn btn-primary btn-sm">Download</a>
+                {% endif %}
             </div>
         </div>
     </div>

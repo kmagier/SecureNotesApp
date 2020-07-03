@@ -25,10 +25,16 @@
                     {{note.title}}
                     <button onClick="delete_note(this);" data-id="{{note.id}}"
                         class="delete btn btn-danger btn-sm">Delete</button>
-                        {% if note.attachment_hash %}
-                    <a href="{{url_for('notes.download_file', file_hash = note.attachment_hash)}}"
+                    {% if note.attachment_hash %}
+                    <button onClick="delete_file(this);" data-id="{{note.id}}"
+                        class="delete btn btn-danger btn-sm">Delete file</button>
+                    <a href="{{url_for('notes.download_file_private', file_hash = note.attachment_hash)}}"
                         class="btn btn-primary btn-sm">Download</a>
-                        {% endif %}
+                    {% else %}
+                    <input type="file" id="{{note.id}}" name="note" onchange="upload_file(this);" style="display:none" />
+                    <button class="btn btn-success btn-sm"
+                        onclick="document.getElementById('{{note.id}}').click();">Upload</button>
+                    {% endif %}
             </h2>
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
@@ -49,8 +55,8 @@
     const BASE_URL = 'https://localhost:8080/private-notes'
 
 
-    function delete_note(d) {
-        let item_id = d.getAttribute("data-id");
+    function delete_note(data) {
+        let item_id = data.getAttribute("data-id");
         fetch(BASE_URL + '/delete/' + item_id, {
             method: 'DELETE',
             credentials: 'include'
@@ -59,34 +65,40 @@
             .then(result => location.reload())
             .catch(err => console.log(err))
     }
+
+
+    function delete_file(data) {
+        let item_id = data.getAttribute("data-id");
+        fetch(BASE_URL + '/files/delete/' + item_id, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(result => location.reload())
+            .catch(err => console.log(err))
+    }
+
+    function upload_file(data) {
+        let fileData = new FormData();
+        let file = data.files[0];
+        let item_id = data.getAttribute("id");
+        fileData.append("Note", file)
+        console.log(item_id);
+        console.log(file);
+        fetch(BASE_URL + '/files/' + item_id, {
+            method: 'PATCH',
+            credentials: 'include',
+            body: fileData
+        })
+            .then(response => response.json())
+            .then(data => location.reload())
+            .catch(err => console.log(err))
+    }
+
+
+
 </script>
+
 {% endblock %}
 
 
-
-<!-- <div id="table">
-    <table class="table mb-0">
-        <thead>
-            <tr>
-                <th>CONTENT</th>
-                <th>OWNER</th>
-                <th>IS PUBLIC</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for note in notes %}
-            <tr>
-                <td>{{note.description}}</td>
-                <td>{{note.owner}}</td>
-                <td>
-                    {% if note.isPublic == 'False' %}
-                    <a href="{{url_for('notes.make_public', note_id=note.noteID)}}">Make public</a> 
-                    {% else %}
-                    Note is public
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div> -->

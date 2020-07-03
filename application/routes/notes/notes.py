@@ -1,10 +1,9 @@
 from flask import Flask, Blueprint, current_app, request, url_for, redirect, render_template, jsonify, send_file
 from database import db
-import random, string
+import random, string, os
 from forms.forms import NoteForm
 from models.user import User
 from flask_login import login_required, current_user
-# from routes.auth.auth import get_username
 from models.note import Note
 
 
@@ -41,7 +40,7 @@ def add_note():
 
 @notes_bp.route('/private-notes/<string:file_hash>', methods=["GET", "POST"])
 @login_required
-def download_file(file_hash):
+def download_file_private(file_hash):
     file_to_download = Note.query.filter_by(attachment_hash=file_hash).first()
     if file_to_download:
         path_to_file = file_to_download.file_path
@@ -49,7 +48,20 @@ def download_file(file_hash):
         try:
             return send_file(path_to_file, attachment_filename = org_filename, as_attachment = True)
         except Exception as e:
-            print(e, file = sys.stderr)
+            current_app.logger.debug(e)
+
+@notes_bp.route('/public-notes/<string:file_hash>', methods=["GET", "POST"])
+@login_required
+def download_file_public(file_hash):
+    file_to_download = Note.query.filter_by(attachment_hash=file_hash).first()
+    if file_to_download:
+        path_to_file = file_to_download.file_path
+        org_filename = file_to_download.org_attachment_filename
+        try:
+            return send_file(path_to_file, attachment_filename = org_filename, as_attachment = True)
+        except Exception as e:
+            current_app.logger.debug(e)
+
 
 @notes_bp.route('/private-notes', methods=["GET", "POST"])
 @login_required
@@ -78,8 +90,8 @@ def make_public(note_id):
 @login_required
 def delete_note(note_id):
     if request.method == 'DELETE':
-        user=current_user
-        note=Note.query.filter_by(id=note_id).first()
+        user = current_user
+        note = Note.query.filter_by(id=note_id).first()
         if note.owner_id == user.id:
             db.session.delete(note)
             db.session.commit()
@@ -88,6 +100,49 @@ def delete_note(note_id):
             response = jsonify("You don't have permission to delete this note.")
     else:
         response = jsonify('Invalid method')
+    return response
+
+@notes_bp.route('/private-notes/files/delete/<int:note_id>', methods=['OPTIONS', 'DELETE'])
+@login_required
+def delete_note_file(note_id):
+    if request.method == 'DELETE':
+        user = current_user
+        note = Note.query.filter_by(id=note_id).first()
+        if note.owner_id == user.id:
+            path_to_file = note.file_path
+            os.remove(path_to_file)
+            note.file_path = note.attachment_hash = note.org_attachment_filename = ""
+            response = jsonify('File removed')
+            current_app.logger.debug(f"File with id {note.id} deleted from {path_to_file}")
+            db.session.commit() 
+        else:
+            response = jsonify('File not found')
+    return response
+
+@notes_bp.route('/private-notes/files/<int:note_id>', methods=['OPTIONS', 'PATCH'])
+@login_required
+def upload_note_file(note_id):
+    if request.method == 'PATCH':
+        user = current_user
+        note = Note.query.filter_by(id=note_id).first()
+        if note.owner_id == user.id:
+            note_file = request.files['Note']
+            if(len(note_file.filename) > 0):
+                filename_prefix = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+                new_filename = filename_prefix + '.' + note_file.filename.split('.')[-1]
+                path_to_file = DIR_PATH + new_filename
+                note_file.save(path_to_file)   
+                note.attachment_hash = new_filename
+                note.file_path = path_to_file
+                current_app.logger.debug("Uploaded new file for article id {} with name {} to path {}".format(note_id, new_filename, path_to_file))
+                response = jsonify("File added")
+                db.session.commit()
+            else:
+                response = jsonify("Error: Empty content of file.")
+        else:
+            response = jsonify('Article not found')
+    else:
+        reponse = jsonify('Invalid method')
     return response
 
 @notes_bp.route('/private-notes/make-private/<int:note_id>', methods=["GET", "POST"])
