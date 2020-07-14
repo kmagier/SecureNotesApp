@@ -13,8 +13,15 @@
             <h2 class="mb-0">
                 <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
                     data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
-                    {{note.title}}
+                    {{note.title}} 
                 </button>
+                {% if current_user.is_authenticated and not current_user.id == note.owner_id and note not in current_user.subscribed_notes %}
+                <a href="{{url_for('notes.subscribe_note', note_id = note.id)}}"
+                class="btn btn-primary btn-sm">Subscribe note</a>
+                {%elif note in current_user.subscribed_notes %}
+                <a href="{{url_for('notes.unsubscribe_note', note_id = note.id)}}"
+                class="btn btn-primary btn-sm">Unsubscribe note</a>
+                {% endif %}
             </h2>
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">

@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{% if not notes %}
+{% if not private_notes %}
 <h3>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h3>
 {% else %}
-{% for note in notes %}
+{% for note in private_notes %}
 <!-- <div class="card">
     <div class="card-header">
         {{note.owner_id}}
@@ -31,10 +31,13 @@
                     <a href="{{url_for('notes.download_file_private', file_hash = note.attachment_hash)}}"
                         class="btn btn-primary btn-sm">Download</a>
                     {% else %}
-                    <input type="file" id="{{note.id}}" name="note" onchange="upload_file(this);" style="display:none" />
+                    <input type="file" id="{{note.id}}" name="note" onchange="upload_file(this);"
+                        style="display:none" />
                     <button class="btn btn-success btn-sm"
                         onclick="document.getElementById('{{note.id}}').click();">Upload</button>
                     {% endif %}
+                    <a href="{{url_for('notes.edit_note', note_id = note.id)}}"
+                        class="btn btn-primary btn-sm">Edit</a>
             </h2>
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
@@ -51,6 +54,33 @@
 </div>
 {% endfor %}
 {% endif %}
+{% if not subscribed_notes %}
+<h3>You don't have any subscribed notes <a href="{{url_for('notes.public_notes')}}">Subscribe notes.</a></h3>
+{% else %}
+{% for subscribed_note in subscribed_notes %}
+<div class="accordion" id="notesAccordion">
+    <div class="card">
+        <div class="card-header" id="heading{{subscribed_note.id}}">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                    data-target="#note_{{subscribed_note.id}}" aria-expanded="false" aria-controls="note_{{subscribed_note.id}}">
+                    {{subscribed_note.title}}
+                    {% if subscribed_note.attachment_hash %}
+                    <a href="{{url_for('notes.download_file_private', file_hash = subscribed_note.attachment_hash)}}"
+                        class="btn btn-primary btn-sm">Download</a>
+                    {% endif %}
+            </h2>
+        </div>
+        <div id="note_{{subscribed_note.id}}" class="collapse" aria-labelledby="heading{{subscribed_note.id}}" data-parent="#notesAccordion">
+            <div class="card-body">
+                {{subscribed_note.description}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
 <script>
     const BASE_URL = 'https://localhost:8080/private-notes'
 
@@ -100,5 +130,3 @@
 </script>
 
 {% endblock %}
-
-

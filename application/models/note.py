@@ -1,5 +1,5 @@
 from datetime import datetime
-from models.user import User
+from models.user import User, followed_notes
 from database import db
 from flask_sqlalchemy import inspect
 
@@ -16,8 +16,19 @@ class Note(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     is_public = db.Column(db.Boolean, unique=False, default=False) 
 
+    def is_subscribing(self, user): 
+        return self.followers.filter(followed_notes.c.user_id == user.id).count() > 0 
+
+    def subscribe_note(self, user):
+        if not self.is_subscribing(user):
+            self.followers.append(user)
+    
+    def unsubscribe_note(self, user):
+        if self.is_subscribing(user):
+            self.followers.remove(user)
+
     def __repr__(self):
-        return f'<Article id: {self.id}>'
+        return f'<Note id: {self.id}>'
     
     def serialize(self):
         return {"id": self.id,
