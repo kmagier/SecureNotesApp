@@ -30,9 +30,9 @@ class RegistrationForm(FlaskForm):
 
 class NoteForm(FlaskForm):
     title = StringField('Title', validators=[Length(min=1, max=150)])
-    description = TextAreaField('Description', validators=[Length(min=1, max=150)], render_kw={"rows": 1})
+    description = TextAreaField('Description', validators=[Length(min=1, max=150)], render_kw={"rows": 4})
     attachment = FileField('File')
-    submit = SubmitField('Post')
+    submit = SubmitField('Submit')
 
 class PasswordChangeForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
