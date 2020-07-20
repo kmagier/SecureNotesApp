@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content%}
+<h1>{{user.username}}</h1>
+{% if current_user.id != user.id and not current_user.is_following(user) %}
+<a href="{{url_for('main.follow', user_id = user.id)}}" class="btn btn-primary btn-sm">Follow</a>
+{% elif current_user.is_following(user) %}
+<a href="{{url_for('main.unfollow', user_id = user.id)}}" class="btn btn-primary btn-sm">Unfollow</a>
+{% endif %}
+<p>Registered on: {{user.registered_date.date()}}</p>
+<p>Last seen: {{user.last_seen.date()}} {{user.last_seen.time().isoformat(timespec='minutes')}}</p>
+<p>Notes added: {{ user.notes.count() }}</p>
+<p>Notes subscribed: {{ user.subscribed_notes|length }}</p>
+<p>Users following: {{ user.followers.count() }}</p>
+<p>Users followed: {{ user.followed.count() }}</p>
+<h4>About me:</h4>
+<p>{{user.about_me}}</p>
+{% if current_user.id == user.id %}
+<a href="{{url_for('main.edit_profile')}}">Edit your profile</a> <br>
+{% endif %}
+{% if user.notes %}
+    {% for note in user.notes %}
+        {% if current_user == user %}
+        {{ note.title }} <br>
+        {% elif current_user != user and note.is_public %}
+        {{ note.title }} <br>
+        {% endif%}
+    {% endfor %}
+{% else %}
+<p>No public notes</p>
+{% endif %}
+{% endblock %}

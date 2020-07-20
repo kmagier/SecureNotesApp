@@ -31,7 +31,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             current_app.logger.debug(f'Created user {username} with email {email} and password {password}')
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('main.index'))
     return render_template('register.html', form=form)
 
 @auth_bp.route('/login', methods=["GET", "POST"])
@@ -44,7 +44,7 @@ def login():
         else:
             login_user(user)
             current_app.logger.debug(f'Found user with name:{user} and password{user.password_hash}')
-            return redirect(url_for('dashboard.index'))
+            return redirect(url_for('main.index'))
     return render_template('login.html', form=form)
 
 @auth_bp.route('/change-password', methods=["GET", "POST"])
@@ -60,13 +60,13 @@ def change_password():
         else: 
             user.set_password(new_password)
             db.session.commit()
-            return redirect(url_for('dashboard.index'))
+            return redirect(url_for('main.index'))
     return render_template('change-password.html', form=form)
 
 @auth_bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('dashboard.index'))
+    return redirect(url_for('main.index'))
 
 
 

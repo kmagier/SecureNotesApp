@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content">
+	<main>
+        <h2>{{ title}} </h2>
+        {% if user %}
+        <h2>Are you sure, you want to delete {{ user.username }} with ID {{ user.id }} ? All user notes and files will be deleted.</h2> 
+        {% elif note %}
+        <h2>Are you sure, you want to delete {{ note.title }} with ID {{ note.id }} of user {{ note.owner.username }} ? Note and file will be deleted</h2>
+        {% endif %}
+        <form method="POST" enctype="multipart/form-data">
+            <button type="submit" class="btn btn-success">Delete</button>
+        </form>
+	</main>
+</div>
+{% endblock %}

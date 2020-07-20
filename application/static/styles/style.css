@@ -12,12 +12,15 @@ header h1 {
 }
 
 nav {
+    max-width: 1024px;
     max-height: auto;
+    margin-left: auto;
+    margin-right: auto;
     border: 1px solid black;
     margin-bottom: 15px;
 }
 .bg-mynav {
-    background-color: #999;
+    background-color: rgb(0, 172, 106);
 }
 
 .navbar-nav li.nav-item a.nav-link {
@@ -78,33 +81,8 @@ article p {
 table {
 	margin-left: auto;
     margin-right: auto;
-    table-layout: fixed;
     width: 100%;
     
-}
-table, tr, td {
-	border: 1px solid #E2C2B2;
-}
-
-table td {
-    word-wrap: break-word;         /* All browsers since IE 5.5+ */
-    overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
-}
-
-.caption-bottom {
-	caption-side: bottom;
-}
-
-td:nth-child(odd) {
-	background-color: #F4D3C3;
-}
-
-td:nth-child(even) {
-	background-color: #FEEBE1;
-}
-
-thead tr {
-	background-color: #dbda9e !important;
 }
 
 #form-messages {
@@ -119,50 +97,6 @@ thead tr {
     width: 400px;
 }
 
-/* .registration-form {
-    width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.registration-form label {
-    float: left;
-    width: 150px;
-    text-align: right;
-}
-
-.registration-form label::after {
-    content: ":";
-}
-
-.registration-form input {
-    float: left;
-    width: 200px;
-}
-
-#button-reg-form {
-    float: inline-start;
-    margin-left: 150px;
-    margin-right: auto;
-    width: 205px;
-}
-
-label.required::after {
-    color: red;
-    content: "*:";
-}
-
-.form-control{
-    height: 40px;
-    box-shadow: none;
-    color: #969fa4;
-}
-.form-control:focus{
-    border-color: #5cb85c;
-}
-.form-control, .btn{        
-    border-radius: 3px;
-} */
 .signup-form{
     width: 400px;
     margin: 0 auto;
@@ -236,3 +170,4 @@ label.required::after {
     border: 1px solid #ba68c8;
     box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
 }
+

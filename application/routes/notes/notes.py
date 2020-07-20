@@ -98,6 +98,8 @@ def delete_note(note_id):
         user = current_user
         note = Note.query.filter_by(id=note_id).first()
         if note.owner_id == user.id:
+            if note.file_path:
+                os.remove(note.file_path)
             db.session.delete(note)
             db.session.commit()
             response = jsonify('Note deleted')   
@@ -116,7 +118,7 @@ def delete_note_file(note_id):
         if note.owner_id == user.id:
             path_to_file = note.file_path
             os.remove(path_to_file)
-            note.file_path = note.attachment_hash = note.org_attachment_filename = ""
+            note.file_path = note.attachment_hash = note.org_attachment_filename = None
             response = jsonify('File removed')
             current_app.logger.debug(f"File with id {note.id} deleted from {path_to_file}")
             db.session.commit() 
@@ -170,7 +172,7 @@ def edit_note(note_id):
     note = Note.query.get_or_404(note_id)
     form = NoteForm(obj=note)
     if request.method == 'POST' and form.validate_on_submit():
-        if form.attachment:
+        if form.attachment.data:
             attachment = request.files[form.attachment.name]
             if(len(attachment.filename) > 0):
                 filename_prefix = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
@@ -208,9 +210,9 @@ def unsubscribe_note(note_id):
     if note.is_subscribing(user):
         note.unsubscribe_note(user)
         db.session.commit()
-        return redirect(url_for('notes.public_notes'))
+        return redirect(request.referrer)
     else:
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('main.index'))
 
 
 @notes_bp.route('/public-notes', methods=["GET"])
