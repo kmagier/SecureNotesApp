@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content%}
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {% for error in form.username.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+    <h2>{{ title }} </h2>
+    {{ form.username(placeholder="Username")}}
+    {{ form.about_me(placeholder="About me") }}
+    {{ form.submit(class_="btn btn-success") }}
+</form>
+{% endblock %}

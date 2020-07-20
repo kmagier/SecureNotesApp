@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, EqualTo, Email, Length, ValidationError
 import re
+from models.user import User
 from database import db
 from const import *
 
@@ -45,3 +46,17 @@ class PasswordChangeForm(FlaskForm):
     #     if not re.match(r"^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$])[\w\d@#$]{8,}$", field.data):
     #         raise ValidationError('Password is too weak, password must contain at least one digit, one uppercase letter, one lowercase letter and one special character(@,#,$).')
         
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=1, max=40)])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=150)])
+    submit = SubmitField('Submit')
+
+    def __init__(self, original_username, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+
+    def validate_username(self,username):
+        if username.data != self.original_username:
+            user = User.query.filter_by(username=self.username.data).first()
+            if user is not None:
+                raise ValidationError('This name is already being used')

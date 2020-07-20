@@ -5,50 +5,40 @@
 <h3>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h3>
 {% else %}
 {% for note in private_notes %}
-<!-- <div class="card">
-    <div class="card-header">
-        {{note.owner_id}}
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Description:</h5>
-        <p class="card-text">{{note.description}}</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-</div> -->
-
 <div class="accordion" id="notesAccordion">
     <div class="card">
         <div class="card-header" id="heading{{note.id}}">
-            <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+            <h5 class="mb-0">
+                <button class="btn btn-link text-left" type="button" data-toggle="collapse"
                     data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
                     {{note.title}}
                     <button onClick="delete_note(this);" data-id="{{note.id}}"
-                        class="delete btn btn-danger btn-sm">Delete</button>
+                        class="delete btn btn-danger btn-sm float-right">Delete</button>
                     {% if note.attachment_hash %}
                     <button onClick="delete_file(this);" data-id="{{note.id}}"
-                        class="delete btn btn-danger btn-sm">Delete file</button>
+                        class="delete btn btn-warning btn-sm float-right">Delete file</button>
                     <a href="{{url_for('notes.download_file_private', file_hash = note.attachment_hash)}}"
-                        class="btn btn-primary btn-sm">Download</a>
+                        class="btn btn-info btn-sm float-right">Download</a>
                     {% else %}
                     <input type="file" id="{{note.id}}" name="note" onchange="upload_file(this);"
                         style="display:none" />
-                    <button class="btn btn-success btn-sm"
+                    <button class="btn btn-success btn-sm float-right"
                         onclick="document.getElementById('{{note.id}}').click();">Upload</button>
                     {% endif %}
                     <a href="{{url_for('notes.edit_note', note_id = note.id)}}"
-                        class="btn btn-primary btn-sm">Edit</a>
-            </h2>
+                        class="btn btn-primary btn-sm float-right">Edit</a>
+                    {% if note.is_public == False %}
+                    <a href="{{url_for('notes.make_public', note_id=note.id)}}" class="btn btn-secondary btn-sm float-right">Make public</a>
+                    {% else %}
+                    <a href="{{url_for('notes.make_private', note_id=note.id)}}" class="btn btn-secondary btn-sm float-right">Make
+                        private</a>
+                    {% endif %}
+            </h5>
         </div>
         <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
             <div class="card-body">
                 {{note.description}}
             </div>
-            {% if note.is_public == False %}
-            <a href="{{url_for('notes.make_public', note_id=note.id)}}" class="btn btn-primary">Make public</a>
-            {% else %}
-            <a href="{{url_for('notes.make_private', note_id=note.id)}}" class="btn btn-primary">Make private</a>
-            {% endif %}
         </div>
     </div>
 </div>
@@ -63,15 +53,19 @@
         <div class="card-header" id="heading{{subscribed_note.id}}">
             <h2 class="mb-0">
                 <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
-                    data-target="#note_{{subscribed_note.id}}" aria-expanded="false" aria-controls="note_{{subscribed_note.id}}">
+                    data-target="#note_{{subscribed_note.id}}" aria-expanded="false"
+                    aria-controls="note_{{subscribed_note.id}}">
                     {{subscribed_note.title}}
                     {% if subscribed_note.attachment_hash %}
                     <a href="{{url_for('notes.download_file_private', file_hash = subscribed_note.attachment_hash)}}"
                         class="btn btn-primary btn-sm">Download</a>
                     {% endif %}
+                    <a href="{{url_for('notes.unsubscribe_note', note_id = subscribed_note.id)}}"
+                        class="btn btn-primary btn-sm">Unsubscribe note</a>
             </h2>
         </div>
-        <div id="note_{{subscribed_note.id}}" class="collapse" aria-labelledby="heading{{subscribed_note.id}}" data-parent="#notesAccordion">
+        <div id="note_{{subscribed_note.id}}" class="collapse" aria-labelledby="heading{{subscribed_note.id}}"
+            data-parent="#notesAccordion">
             <div class="card-body">
                 {{subscribed_note.description}}
             </div>
