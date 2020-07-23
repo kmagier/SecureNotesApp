@@ -1,49 +1,45 @@
-{% extends "layout.html" %}
+{% extends "admin/admin_dashboard.html" %}
 
-{% block content %}
+{% block admin %}
 <div class="content">
-    <main>
-        <h2>Admin dashboard</h2>
-        <a href="{{url_for('admin.admin_user_list')}}">Manage users</a>
-        <a href="{{url_for('admin.admin_notes_list')}}">Manage notes</a>
-        {% if not notes %}
-        <h2>No notes added </h2>
-        {% else %}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Note id</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Added on</th>
-                        <th scope="col">Attachment filename</th>
-                        <th scope="col">Attachment hash</th>
-                        <th scope="col">Owner id</th>
-                        <th scope="col">Subscribers</th>
-                        <th scope="col">Is public</th>
-                        <th scope="col">Modify</th>
-                        <th scope="col">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for note in notes %}
-                    <tr> 
-                        <td>{{note.id}}</td>
-                        <td>{{note.title}}</td>
-                        <td>{{note.timestamp}}</td>
-                        <td style="word-break: break-all;">{{note.org_attachment_filename}}</td>
-                        <td>{{note.attachment_hash}}</td>
-                        <td>{{note.owner_id}}</td>
-                        <td>{{note.subscribers.count()}}</td>
-                        <td>{{note.is_public }}</td>
-                        <td><a href="{{url_for('admin.admin_note_edit', note_id = note.id)}}">Modify</a></td>
-                        <td><a href="{{url_for('admin.admin_note_delete', note_id = note.id)}}">Delete</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-    </main>
+    {% if not notes %}
+    <hr>
+    <div class="alert alert-info">No notes added yet.</div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Note id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Added on</th>
+                    <th scope="col">Attachment filename</th>
+                    <th scope="col">Attachment hash</th>
+                    <th scope="col">Owner id</th>
+                    <th scope="col">Subscribers</th>
+                    <th scope="col">Is public</th>
+                    <th scope="col">Modify</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for note in notes %}
+                <tr>
+                    <td>{{note.id}}</td>
+                    <td>{{note.title}}</td>
+                    <td>{{note.timestamp}}</td>
+                    <td style="word-break: break-all;">{{note.org_attachment_filename}}</td>
+                    <td>{{note.attachment_hash}}</td>
+                    <td>{{note.owner_id}}</td>
+                    <td>{{note.subscribers.count()}}</td>
+                    <td>{{note.is_public }}</td>
+                    <td><a href="{{url_for('admin.admin_note_edit', note_id = note.id)}}">Modify</a></td>
+                    <td><a href="{{url_for('admin.admin_note_delete', note_id = note.id)}}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

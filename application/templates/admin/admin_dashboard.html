@@ -1,22 +1,14 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="content">
-	<main>
-		<h2>Admin dashboard</h2>
-        <a href="{{url_for('admin.admin_user_list')}}">Manage users</a>
-        <a href="{{url_for('admin.admin_notes_list')}}">Manage notes</a>
-		<article>
-			<h3>
-				TODO:
-			</h3>
-			<p>
-				<ul>
-					<li>JWT Based authentication.</li>
-					<li>Change layout.</li>
-				</ul>
-			</p>
-		</article>
-	</main>
+<div class="admin-dashboard">
+	<h2>ADMIN DASHBOARD</h2>
+	<div class="admin-nav">
+		<a href="{{url_for('admin.admin_dashboard')}}">Dashboard</a> |
+		<a href="{{url_for('admin.admin_user_list')}}">Manage users</a> |
+		<a href="{{url_for('admin.admin_notes_list')}}">Manage notes</a>
+	</div>
+{% block admin %}
+{% endblock %}
 </div>
 {% endblock %}
