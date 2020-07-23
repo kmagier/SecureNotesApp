@@ -2,7 +2,8 @@
 
 {% block content %}
 {% if not private_notes %}
-<h3>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h3>
+<div class="private-notes-info">
+<h5>You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a></h5></div>
 {% else %}
 {% for note in private_notes %}
 <div class="accordion" id="notesAccordion">
@@ -44,8 +45,10 @@
 </div>
 {% endfor %}
 {% endif %}
+<hr>
 {% if not subscribed_notes %}
-<h3>You don't have any subscribed notes <a href="{{url_for('notes.public_notes')}}">Subscribe notes.</a></h3>
+<div class="subscribed-notes-info">
+<h5>You don't have any subscribed notes. <a href="{{url_for('notes.public_notes')}}">Subscribe notes.</a></h5></div>
 {% else %}
 {% for subscribed_note in subscribed_notes %}
 <div class="accordion" id="notesAccordion">

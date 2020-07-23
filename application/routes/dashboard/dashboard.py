@@ -41,12 +41,13 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
-        db.session.commit()
+        current_app.logger.debug(len(form.about_me.data))
+        db.session.commit() 
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', form=form)
+    return render_template('edit_profile.html', form=form, title="Edit info")
 
 @bp.route('/follow/<int:user_id>', methods=['GET', 'POST'])
 @login_required

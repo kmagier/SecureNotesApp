@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 login_manager=LoginManager()
-db.app = app 
+db.app = app  
 db.metadata.clear()
 
 from routes.auth.auth import auth_bp

@@ -2,16 +2,27 @@
 
 {% block content %}
 <div class="content">
-	<main>
+    <form method="POST" enctype="multipart/form-data">
         <h2>{{ title}} </h2>
         {% if user %}
-        <h2>Are you sure, you want to delete {{ user.username }} with ID {{ user.id }} ? All user notes and files will be deleted.</h2> 
+        <div class="alert alert-danger">
+            Are you sure, you want to delete user: <b>{{ user.username }}</b> with ID: <b>{{ user.id }}</b> ? All user
+            notes and files will
+            be deleted.
+            
+        </div>
+        <a href="{{url_for('admin.admin_user_list')}}" class="btn btn-danger">Cancel</a>
         {% elif note %}
-        <h2>Are you sure, you want to delete {{ note.title }} with ID {{ note.id }} of user {{ note.owner.username }} ? Note and file will be deleted</h2>
+        <div class="alert alert-danger">
+            Are you sure, you want to delete note: <b>{{ note.title }}</b> with ID: <b>{{ note.id }}</b> of user:
+            <b>{{ note.owner.username }}</b> ?
+            Note and file will be deleted.
+        </div>
+        <a href="{{url_for('admin.admin_notes_list')}}" class="btn btn-danger">Cancel</a>
         {% endif %}
-        <form method="POST" enctype="multipart/form-data">
-            <button type="submit" class="btn btn-success">Delete</button>
-        </form>
-	</main>
+        
+        <button type="submit" class="btn btn-success">Delete</button>
+        
+    </form>
 </div>
 {% endblock %}

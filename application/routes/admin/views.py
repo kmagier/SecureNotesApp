@@ -50,7 +50,7 @@ def admin_user_edit(user_id):
     form.email.data = user.email
     form.about_me.data = user.about_me
     form.is_admin.data = user.is_admin
-    return render_template('admin/admin_user.html', form=form)
+    return render_template('admin/admin_user.html', form=form, title=f'Edit user')
 
 @bp.route('/users/delete/<int:user_id>', methods=['GET', 'POST'])
 @login_required

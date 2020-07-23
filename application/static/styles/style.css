@@ -20,7 +20,7 @@ nav {
     margin-bottom: 15px;
 }
 .bg-mynav {
-    background-color: rgb(0, 172, 106);
+    background-color: rgb(0, 146, 122);
 }
 
 .navbar-nav li.nav-item a.nav-link {
@@ -163,6 +163,10 @@ table {
     text-decoration: underline;
 }  
 
+.signup-form input[type="checkbox"] {
+    margin: 6px 10px 0px 10px;
+}
+
 .purple-border textarea {
     border: 1px solid #ba68c8;
 }
@@ -171,3 +175,135 @@ table {
     box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
 }
 
+.user-profile {
+    display: block;
+    background-color: #e6f8ff;
+    border: thin solid cornflowerblue;
+}
+
+.user-profile-btns {
+    display: inline;
+    margin: 2px;
+    float: right;
+}
+
+.user-profile-info {
+    width: 100%;
+    display: block;
+    color: midnightblue;
+    background-color: #cee6ff;
+    border: cornflowerblue;
+    border-style: solid none solid none;
+    border-width: thin;
+}
+
+div.user-profile > h1 {
+    display: inline;
+    margin: 5px;
+}
+
+div.user-profile > p {
+    margin: 5px 5px 5px 5px;
+}
+
+div.user-profile-info > p {
+    margin: 5px;
+}
+
+#note-info-container {
+    margin: 2px 0px 0px 5px;
+    float: left;
+    width: 45%;
+}
+
+#user-followers-container {
+    margin: 2px;
+    width: 45%;
+    overflow: hidden;
+    text-align: right;
+}
+
+.user-about-me {
+    display: block;
+    word-break: break-all;
+    margin: 5px;
+}
+
+.private-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: darkseagreen;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto;
+}
+
+.subscribed-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: #82b4bb;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto;    
+}
+
+.public-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: #82b4bb;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto; 
+}
+
+.admin-nav {
+    margin: auto;
+    text-align: center;
+}
+
+div.admin-dashboard > h2, h3 {
+    text-align: center;
+    color: darkred;
+} 
+
+input#submit {
+    margin: 10px 0px 0px 0px;
+}
+
+.user-notes-list {
+    width: 100%;
+    display: block;
+    color: midnightblue;
+    background-color: #cee6ff;
+    border: cornflowerblue;
+    border-style: solid none none none;
+    border-width: thin;
+}
+
+/* .profile-edit-form {
+    width: 300px ;
+    margin: 0 auto;
+    background-color: cadetblue;
+    border-style: solid;
+    border-width: thin;
+
+}
+
+.profile-edit-form form{
+    text-align: center;
+    position: relative;
+
+}
+.profile-edit-form label{
+    color: red; */
+
+/* } */

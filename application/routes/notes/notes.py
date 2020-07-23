@@ -1,4 +1,5 @@
-from flask import Flask, Blueprint, current_app, request, url_for, redirect, render_template, jsonify, send_file
+from flask import (Flask, Blueprint, current_app, request, url_for, redirect, 
+                    render_template, jsonify, send_file, flash)
 from database import db
 import random, string, os
 from forms.forms import NoteForm
@@ -33,6 +34,7 @@ def add_note():
             current_app.logger.debug(f'No file')
             db.session.add(note)
         db.session.commit()
+        flash('Note added successfully')
         current_app.logger.debug("Note added")
         current_app.logger.debug(f"Content: {description}")
         return redirect(request.url)
@@ -66,18 +68,8 @@ def download_file_public(file_hash):
 @notes_bp.route('/private-notes', methods=["GET", "POST"])
 @login_required
 def private_notes():
-    private_notes = []
-    subscribed_notes = []
-    user = current_user
-    user_private_notes = user.notes.all()
-    user_subscribed_notes = user.subscribed_notes
-    current_app.logger.debug(user_subscribed_notes)
-    for note in user_private_notes: 
-        current_app.logger.debug(note)
-        private_notes.append(note)
-    for subscribed_note in user_subscribed_notes:
-        subscribed_notes.append(subscribed_note)
-    return render_template("private-notes.html", private_notes = private_notes, subscribed_notes = subscribed_notes)
+    private_notes = current_user.notes.all()
+    return render_template("private_notes.html", private_notes = private_notes)
 
 @notes_bp.route('/private-notes/make-public/<int:note_id>', methods=["GET", "POST"])
 @login_required
@@ -87,6 +79,7 @@ def make_public(note_id):
     if note.owner_id == user.id:
         note.is_public = True
         db.session.commit()
+        flash('Note added to public notes.', category='info')
         return redirect(url_for('notes.private_notes'))   
     else:
         return redirect(url_for('dashboard.index'), 403)
@@ -102,7 +95,8 @@ def delete_note(note_id):
                 os.remove(note.file_path)
             db.session.delete(note)
             db.session.commit()
-            response = jsonify('Note deleted')   
+            response = jsonify('Note deleted')
+            flash('Note deleted.', category='warning')   
         else:
             response = jsonify("You don't have permission to delete this note.")
     else:
@@ -122,6 +116,7 @@ def delete_note_file(note_id):
             response = jsonify('File removed')
             current_app.logger.debug(f"File with id {note.id} deleted from {path_to_file}")
             db.session.commit() 
+            flash('Attachment deleted.', category='warning')
         else:
             response = jsonify('File not found')
     return response
@@ -145,6 +140,7 @@ def upload_note_file(note_id):
                 current_app.logger.debug("Uploaded new file for article id {} with name {} to path {}".format(note_id, new_filename, path_to_file))
                 response = jsonify("File added")
                 db.session.commit()
+                flash('File uploaded successfully.', category='success')
             else:
                 response = jsonify("Error: Empty content of file.")
         else:
@@ -161,6 +157,7 @@ def make_private(note_id):
     if note.owner_id == user.id:
         note.is_public = False
         db.session.commit()
+        flash('Note changed to private.', category='info')
         return redirect(url_for('notes.private_notes'))
     else:
         return redirect(url_for('dashboard.index'), 403)
@@ -185,10 +182,17 @@ def edit_note(note_id):
         note.title = form.title.data
         note.description = form.description.data
         db.session.commit()
+        flash('Note edited successfully.', category='success')
         return redirect(url_for('notes.private_notes'))
     form.title.data = note.title
     form.description.data = note.description
     return render_template('edit-note.html', form=form, title=title, note=note)
+
+@notes_bp.route('/subscribed-notes', methods=['GET'])
+@login_required
+def subscribed_notes():
+    subscribed_notes = current_user.subscribed_notes
+    return render_template('subscribed_notes.html', subscribed_notes=subscribed_notes)
 
 @notes_bp.route('/public-notes/subscribe/<int:note_id>', methods=["GET", "POST"])
 @login_required
@@ -198,6 +202,7 @@ def subscribe_note(note_id):
     if not note.is_subscribing(user):
         note.subscribe_note(user)
         db.session.commit()
+        flash('Note added to subscribed notes.', category='info')
         return redirect(url_for('notes.public_notes'))
     else:
         return redirect(url_for('dashboard.index'))
@@ -210,6 +215,7 @@ def unsubscribe_note(note_id):
     if note.is_subscribing(user):
         note.unsubscribe_note(user)
         db.session.commit()
+        flash('Note removed from subscribed notes.', category='info')
         return redirect(request.referrer)
     else:
         return redirect(url_for('main.index'))
