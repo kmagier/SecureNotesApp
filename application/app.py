@@ -5,16 +5,25 @@ import psycopg2
 from database import db
 from config import *
 from flask_login import LoginManager
+from flask_mail import Mail
 
 
 app = Flask(__name__, static_url_path="")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587 
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["SERVER_NAME"] = 'localhost:8080'
+app.config["PREFERRED_URL_SCHEME"] = 'https'
 
+mail = Mail(app)
 login_manager=LoginManager()
 db.app = app  
-db.metadata.clear()
+db.metadata.clear() 
 
 from routes.auth.auth import auth_bp
 from routes.dashboard.dashboard import bp as dashboard_bp
@@ -22,9 +31,10 @@ from routes.notes.notes import notes_bp
 from routes.admin.views import bp as admin_bp
 from models.user import User
 from models.note import Note
-db.init_app(app) 
-login_manager.init_app(app)
 
+db.init_app(app)
+login_manager.init_app(app)
+mail.init_app(app)
 db.create_all()
 
 

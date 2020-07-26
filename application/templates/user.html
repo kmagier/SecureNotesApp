@@ -30,16 +30,11 @@
         <p>{{user.about_me}}</p>
     </div>
 
-    {% if user.notes %}
+    
     <div class="user-notes-list">
-        <h4>User notes:</h4>
-        {% for note in user.notes %}
-        {% if current_user == user %}
-        {{ note.title }} <br>
-        {% elif current_user != user and note.is_public %}
-        {{ note.title }} <br>
-        {% endif%}
-        {% endfor %}
+        <h4>User notes:</h4>   
+        {% if notes %} 
+        <a href="{{url_for('main.user_notes', user_id=user.id)}}" class="btn btn-primary btn-sm">User notes</a>
         {% else %}
         <p>No public notes</p>
         {% endif %}
