@@ -4,9 +4,8 @@ from flask_wtf.file import FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, EqualTo, Email, Length, ValidationError
 import re
-from models.user import User
-from database import db
-from const import *
+from application.models.user import User
+from application import db
 
 ALLOWED_NOTE_EXTENSIONS = ['pdf', 'doc', 'txt']
 
@@ -20,7 +19,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email Address', validators=[Length(min=6, max=35), DataRequired(), Email()])
     password = PasswordField('New Password', 
         validators=[DataRequired(), Length(min=1)])
-    confirm = PasswordField('Repeat Password', validators=
+    confirm_password = PasswordField('Repeat Password', validators=
     [DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Sign Up')
 
@@ -78,11 +77,10 @@ class ResetPasswordRequestForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=1)])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
     submit = SubmitField('Submit')
 
-    def validate_password(self,field):
+    def validate_password(self, field):
         if not re.match(r"^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$])[\w\d@#$]{8,}$", field.data):
             raise ValidationError('Password is too weak, password must contain at least one digit, one uppercase letter, one lowercase letter and one special character(@,#,$).')

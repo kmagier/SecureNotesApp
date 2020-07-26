@@ -1,6 +1,6 @@
 from datetime import datetime
-from models.user import User, subscribed_notes
-from database import db
+from application.models.user import User, subscribed_notes
+from application import db
 from flask_sqlalchemy import inspect
 
 class Note(db.Model):

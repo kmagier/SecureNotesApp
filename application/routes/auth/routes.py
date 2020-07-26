@@ -1,20 +1,17 @@
 from flask import (Flask, Blueprint, render_template, redirect, url_for, 
                     request, current_app, session, make_response, flash)
-from functools import wraps
-from forms.forms import RegistrationForm, LoginForm, PasswordChangeForm, ResetPasswordRequestForm, ResetPasswordForm
-from database import db
-from models.user import User, check_existing_user
-import bcrypt
-from app import login_manager
-from flask_login import login_user, logout_user, current_user, login_required
 import random, string
-from const import *
-from mailer import send_email, send_password_reset_email, send_registration_email
+from application.forms.forms import RegistrationForm, LoginForm, PasswordChangeForm, ResetPasswordRequestForm, ResetPasswordForm
+from application import db
+from application.routes.auth import bp
+from application.models.user import User, check_existing_user
+import bcrypt
+from flask_login import login_user, logout_user, current_user, login_required
+from application.mailer import send_password_reset_email, send_registration_email
 
-
-auth_bp = Blueprint('auth', __name__)
  
-@auth_bp.route('/register', methods=["GET", "POST"])
+ 
+@bp.route('/register', methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate_on_submit():
@@ -35,7 +32,7 @@ def register():
         return redirect(request.url)
     return render_template('auth/register.html', form=form)
 
-@auth_bp.route('/login', methods=["GET", "POST"])
+@bp.route('/login', methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
     if request.method == "POST" and form.validate_on_submit():
@@ -47,7 +44,7 @@ def login():
             return redirect(url_for('main.index'))
     return render_template('auth/login.html', form=form)
 
-@auth_bp.route('/change-password', methods=["GET", "POST"])
+@bp.route('/change-password', methods=["GET", "POST"])
 @login_required
 def change_password():
     form = PasswordChangeForm(request.form)
@@ -65,19 +62,19 @@ def change_password():
             return redirect(url_for('main.index'))
     return render_template('auth/change_password.html', form=form)
 
-@auth_bp.route('/logout')
+@bp.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash('You have been logged out', category='info')
     return redirect(url_for('main.index'))
 
-@auth_bp.route('/reset-password-request', methods=['GET', 'POST'])
+@bp.route('/reset-password-request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = ResetPasswordRequestForm()
-    if form.validate_on_submit and request.method == 'POST':
+    if form.validate_on_submit() and request.method == 'POST':
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
@@ -85,18 +82,18 @@ def reset_password_request():
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password_request.html', form=form)
 
-@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+@bp.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    form = ResetPasswordForm()
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     user = User.verify_reset_password_token(token)
     if not user:
         return redirect(url_for('main.index'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit and request.method == 'POST':
+    if form.validate_on_submit() and request.method == 'POST':
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Password has been changed')
+        flash('Password has been changed', category='info')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
 

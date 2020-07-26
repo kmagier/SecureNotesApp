@@ -1,18 +1,19 @@
 from flask import (Flask, Blueprint, current_app, request, url_for, redirect, 
-                    render_template, jsonify, send_file, flash)
-from database import db
+                    render_template, jsonify, send_file, flash, send_from_directory)
+from application import db
 import os
-from forms.forms import NoteForm
-from models.user import User
+from application.forms.forms import NoteForm
+from application.models.user import User
 from flask_login import login_required, current_user
-from models.note import Note
+from application.models.note import Note
+from application.routes.notes import bp
 import uuid
 
 
-notes_bp = Blueprint('notes', __name__, static_folder='static')
-DIR_PATH = 'static/files/'
+DIR_PATH = 'application/static/files/'
 
-@notes_bp.route('/add-note', methods=["GET", "POST"])
+
+@bp.route('/add-note', methods=["GET", "POST"])
 @login_required
 def add_note():
     user = current_user
@@ -22,10 +23,11 @@ def add_note():
         description = form.description.data
         attachment = request.files[form.attachment.name]
         if attachment:
+            current_app.logger.debug(current_app.root_path) 
             current_app.logger.debug(f'Attachment inside {attachment}')
             filename_prefix = str(uuid.uuid4())
             new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-            path_to_file = DIR_PATH + new_filename
+            path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
             attachment.save(path_to_file)
             note = Note(title=title, description=description, file_path=path_to_file, 
                         org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=user.id)
@@ -38,19 +40,21 @@ def add_note():
         return redirect(request.url)
     return render_template("add_note.html", form=form)
 
-@notes_bp.route('/private-notes/<string:file_hash>', methods=["GET", "POST"])
+@bp.route('/private-notes/<string:file_hash>', methods=["GET", "POST"])
 @login_required
 def download_file_private(file_hash):
     file_to_download = Note.query.filter_by(attachment_hash=file_hash).first()
     if file_to_download:
         path_to_file = file_to_download.file_path
+        current_app.logger.debug(path_to_file)
         org_filename = file_to_download.org_attachment_filename
+        current_app.logger.debug(org_filename)
         try:
             return send_file(path_to_file, attachment_filename = org_filename, as_attachment = True)
         except Exception as e:
             current_app.logger.debug(e)
 
-@notes_bp.route('/public-notes/<string:file_hash>', methods=["GET", "POST"])
+@bp.route('/public-notes/<string:file_hash>', methods=["GET", "POST"])
 @login_required
 def download_file_public(file_hash):
     file_to_download = Note.query.filter_by(attachment_hash=file_hash).first()
@@ -63,13 +67,13 @@ def download_file_public(file_hash):
             current_app.logger.debug(e)
 
 
-@notes_bp.route('/private-notes', methods=["GET", "POST"])
+@bp.route('/private-notes', methods=["GET", "POST"])
 @login_required
 def private_notes():
     private_notes = current_user.notes.order_by(Note.timestamp.desc()).all()
     return render_template("private_notes.html", private_notes = private_notes)
 
-@notes_bp.route('/private-notes/make-public/<int:note_id>', methods=["GET", "POST"])
+@bp.route('/private-notes/make-public/<int:note_id>', methods=["GET", "POST"])
 @login_required
 def make_public(note_id):
     user = current_user
@@ -82,7 +86,7 @@ def make_public(note_id):
     else:
         return redirect(url_for('dashboard.index'), 403)
 
-@notes_bp.route('/private-notes/delete/<int:note_id>', methods=["GET", "DELETE", "OPTIONS"])
+@bp.route('/private-notes/delete/<int:note_id>', methods=["GET", "DELETE", "OPTIONS"])
 @login_required
 def delete_note(note_id):
     if request.method == 'DELETE':
@@ -101,7 +105,7 @@ def delete_note(note_id):
         response = jsonify('Invalid method')
     return response
 
-@notes_bp.route('/private-notes/files/delete/<int:note_id>', methods=['OPTIONS', 'DELETE'])
+@bp.route('/private-notes/files/delete/<int:note_id>', methods=['OPTIONS', 'DELETE'])
 @login_required
 def delete_note_file(note_id):
     if request.method == 'DELETE':
@@ -118,7 +122,7 @@ def delete_note_file(note_id):
             response = jsonify('File not found')
     return response
 
-@notes_bp.route('/private-notes/files/<int:note_id>', methods=['OPTIONS', 'PATCH'])
+@bp.route('/private-notes/files/<int:note_id>', methods=['OPTIONS', 'PATCH'])
 @login_required
 def upload_note_file(note_id):
     if request.method == 'PATCH':
@@ -129,7 +133,7 @@ def upload_note_file(note_id):
             if(len(note_file.filename) > 0):
                 filename_prefix = str(uuid.uuid4())
                 new_filename = filename_prefix + '.' + note_file.filename.split('.')[-1]
-                path_to_file = DIR_PATH + new_filename
+                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
                 note_file.save(path_to_file)   
                 note.attachment_hash = new_filename
                 note.file_path = path_to_file
@@ -145,7 +149,7 @@ def upload_note_file(note_id):
         reponse = jsonify('Invalid method')
     return response
 
-@notes_bp.route('/private-notes/make-private/<int:note_id>', methods=["GET", "POST"])
+@bp.route('/private-notes/make-private/<int:note_id>', methods=["GET", "POST"])
 @login_required
 def make_private(note_id):
     user=current_user
@@ -158,7 +162,7 @@ def make_private(note_id):
     else:
         return redirect(url_for('dashboard.index'), 403)
 
-@notes_bp.route('/private-notes/edit/<int:note_id>', methods=['GET', 'POST'])
+@bp.route('/private-notes/edit/<int:note_id>', methods=['GET', 'POST'])
 @login_required
 def edit_note(note_id):
     title = 'Edit note'
@@ -170,7 +174,7 @@ def edit_note(note_id):
             if(len(attachment.filename) > 0):
                 filename_prefix = str(uuid.uuid4())
                 new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-                path_to_file = DIR_PATH + new_filename
+                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
                 attachment.save(path_to_file)   
                 note.attachment_hash = new_filename
                 note.file_path = path_to_file
@@ -184,13 +188,13 @@ def edit_note(note_id):
     form.description.data = note.description
     return render_template('edit_note.html', form=form, title=title, note=note)
 
-@notes_bp.route('/subscribed-notes', methods=['GET'])
+@bp.route('/subscribed-notes', methods=['GET'])
 @login_required
 def subscribed_notes():
     subscribed_notes = current_user.subscribed_notes
     return render_template('subscribed_notes.html', subscribed_notes=subscribed_notes)
 
-@notes_bp.route('/public-notes/subscribe/<int:note_id>', methods=["GET", "POST"])
+@bp.route('/public-notes/subscribe/<int:note_id>', methods=["GET", "POST"])
 @login_required
 def subscribe_note(note_id):
     user = current_user
@@ -203,7 +207,7 @@ def subscribe_note(note_id):
     else:
         return redirect(url_for('main.index'))
 
-@notes_bp.route('/public-notes/unsubscribe/<int:note_id>', methods=["GET", "POST"])
+@bp.route('/public-notes/unsubscribe/<int:note_id>', methods=["GET", "POST"])
 @login_required
 def unsubscribe_note(note_id):
     user = current_user
@@ -217,7 +221,7 @@ def unsubscribe_note(note_id):
         return redirect(url_for('main.index'))
 
 
-@notes_bp.route('/public-notes', methods=["GET"])
+@bp.route('/public-notes', methods=["GET"])
 def public_notes():
     notes = Note.query.filter_by(is_public=True).order_by(Note.timestamp.asc()).all()
     return render_template('public_notes.html', notes=notes)     
