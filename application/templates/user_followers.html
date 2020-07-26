@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+	<h2>USER {{ title }}</h2>
+	<div class="admin-nav">
+		<a href="{{url_for('main.user_followers_list', user_id=current_user.id)}}">Followers</a> |
+		<a href="{{url_for('main.user_followed_list',  user_id=current_user.id)}}">Followed</a> 
+    </div>
+</div>
+<hr>
+{% if followers_template %}
+{% if followers %}  
+    <div class="followers-box">
+        {% for follower in followers %}
+        <div class="followers followers-frame">
+            <a href="{{url_for('main.user_profile', user_id=follower.id)}}" class="btn btn-primary btn-sm">{{follower.username}}</a>
+            <span>
+                {% if current_user.is_following(follower) %}
+                <a href="{{url_for('main.unfollow', user_id = follower.id)}}" class="btn btn-outline-primary btn-sm">Unfollow</a>
+                {% else %}
+                <a href="{{url_for('main.follow', user_id = follower.id)}}" class="btn btn-outline-primary btn-sm">Follow</a>
+                {% endif %}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="alert alert-info">
+        You don't have any followers
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if followed_template %}
+    {% if followed %}
+    <div class="followers-box">
+        {% for followed in followed %}
+        <div class="followers followers-frame">
+            <a href="{{url_for('main.user_profile', user_id=followed.id)}}" class="btn btn-primary btn-sm">{{followed.username}}</a>
+            <span>
+                {% if current_user.is_following(followed) %}
+                <a href="{{url_for('main.unfollow', user_id = followed.id)}}" class="btn btn-outline-primary btn-sm">Unfollow</a>
+                {% endif %}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="alert alert-info">
+        You are not following anyone.
+    </div>
+    
+    {% endif %}
+    {% endif %}
+
+{% endblock %}
