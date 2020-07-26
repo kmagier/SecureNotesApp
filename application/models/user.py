@@ -1,11 +1,11 @@
 from database import db
 from datetime import datetime
-from pytz import timezone
 from flask import redirect, url_for
 import bcrypt
-from app import login_manager
+from time import time
+from app import login_manager, app
 from flask_login import UserMixin
-# from flask_sqlalchemy import inspect
+import jwt
 
 
 subscribed_notes = db.Table('subscribed_notes', 
@@ -43,6 +43,18 @@ class User(UserMixin, db.Model):
         
     def check_password(self, password):
         return bcrypt.checkpw(password.encode(), self.password_hash.encode())
+
+    def get_reset_password_token(self, expires_in=300):
+        return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
+        app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
     def follow(self, user):
         if not self.is_following(user):

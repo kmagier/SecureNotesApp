@@ -1,7 +1,7 @@
 from flask import (Flask, Blueprint, render_template, redirect, url_for, 
                     request, current_app, session, make_response, flash)
 from functools import wraps
-from forms.forms import *
+from forms.forms import RegistrationForm, LoginForm, PasswordChangeForm, ResetPasswordRequestForm, ResetPasswordForm
 from database import db
 from models.user import User, check_existing_user
 import bcrypt
@@ -9,9 +9,11 @@ from app import login_manager
 from flask_login import login_user, logout_user, current_user, login_required
 import random, string
 from const import *
+from mailer import send_email, send_password_reset_email, send_registration_email
+
 
 auth_bp = Blueprint('auth', __name__)
-
+ 
 @auth_bp.route('/register', methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
@@ -20,19 +22,18 @@ def register():
         password = form.password.data
         salt = bcrypt.gensalt(rounds=12)
         secure_password = bcrypt.hashpw(password.encode(), salt)
-        current_app.logger.debug("Bcrypt salt %s" % salt)
-        current_app.logger.debug("Bcrypt password %s" % secure_password)
         email = form.email.data
-        existing_user = check_existing_user(username)
-        current_app.logger.debug(f'User exists:{existing_user}')
-        if check_existing_user(username) is False:
+        if not check_existing_user(username):
             new_user = User(username=username, email=email)
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
-            current_app.logger.debug(f'Created user {username} with email {email} and password {password}')
-        return redirect(url_for('main.index'))
-    return render_template('register.html', form=form)
+            # send_registration_email(new_user)
+            flash('Account created successfully', category='success')
+            return redirect(url_for('auth.login'))
+        flash('Could not register account. Username taken or wrong credentials', category='warning')
+        return redirect(request.url)
+    return render_template('auth/register.html', form=form)
 
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
@@ -40,12 +41,11 @@ def login():
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(username=form.login.data).first()
         if user is None or not user.check_password(form.password.data):
-            current_app.logger.debug('Wrong username or password')
+            flash('Wrong username or password', category='warning')
         else:
             login_user(user)
-            current_app.logger.debug(f'Found user with name:{user} and password{user.password_hash}')
             return redirect(url_for('main.index'))
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/change-password', methods=["GET", "POST"])
 @login_required
@@ -56,19 +56,49 @@ def change_password():
         current_password = form.password.data
         new_password = form.new_password.data
         if not user.check_password(current_password):
+            flash('Wrong password or passwords do not match.', category='warning')
             return redirect(request.url)
         else: 
             user.set_password(new_password)
             db.session.commit()
+            flash('Password changed successfully', category='success')
             return redirect(url_for('main.index'))
-    return render_template('change-password.html', form=form)
+    return render_template('auth/change_password.html', form=form)
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
     logout_user()
+    flash('You have been logged out', category='info')
     return redirect(url_for('main.index'))
 
+@auth_bp.route('/reset-password-request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit and request.method == 'POST':
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Email with link for password reset was sent.', category="info")
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password_request.html', form=form)
 
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('main.index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit and request.method == 'POST':
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Password has been changed')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', form=form)
 
 # def authorization_required(f):
 #     @wraps(f)
