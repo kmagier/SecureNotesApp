@@ -1,12 +1,13 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, session, request, current_app, flash, abort
 from flask_login import current_user, login_required
-from models.user import User
-from models.note import Note
-from database import db
+from application.models.user import User
+from application.models.note import Note
+from application import db
 import random, string, os
 from .forms import AdminEditProfileForm, AdminEditNoteForm
+from application.routes.admin import bp
+import uuid
 
-bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 DIR_PATH = 'static/files/'
 
@@ -74,10 +75,10 @@ def admin_note_edit(note_id):
     if request.method == 'POST' and form.validate_on_submit():
         if form.attachment.data:
             attachment = request.files[form.attachment.name]
-            if(len(attachment.filename) > 0):
-                filename_prefix = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+            if(len(attachment.filename) > 0): 
+                filename_prefix = str(uuid.uuid4())  
                 new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-                path_to_file = DIR_PATH + new_filename
+                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
                 attachment.save(path_to_file)   
                 note.attachment_hash = new_filename
                 note.file_path = path_to_file

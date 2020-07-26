@@ -7,11 +7,9 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./application:/application
+      - ./application:/notesapp/application
     env_file: 
-        - ./application/.env   
-  redis:
-    image: "redis:alpine"
+        - .env
   db:
     image: postgres:latest
     restart: always
@@ -21,6 +19,6 @@ services:
     ports:
         - 5432:5432
     env_file: 
-        - ./application/.env
+        - .env
 volumes:
   pgdata:

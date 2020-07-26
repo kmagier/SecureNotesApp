@@ -4,16 +4,6 @@
 
 {% include "includes/flash_info.html" %}
 
-{% if form.errors %}
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-{% endif %}
-
 <div class="signup-form">
     <h2>Log in</h2>
     <form action="{{url_for('auth.login')}}" method="POST">

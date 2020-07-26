@@ -1,17 +1,15 @@
 from datetime import datetime
 from flask import Flask, Blueprint, render_template, redirect, url_for, session, request, current_app, flash, abort
 from flask_login import current_user, login_required
-from models.user import User
-from models.note import Note
-from forms.forms import EditProfileForm
-from database import db
-from app import app
+from application.models.user import User
+from application.models.note import Note
+from application.forms.forms import EditProfileForm
+from application import db
 import os
-
-bp = Blueprint('main', __name__)
+from application.routes.main import bp
 
 @bp.before_app_request
-def before_request():
+def before_request(): 
     if current_user.is_authenticated:
         current_user.last_seen = datetime.now()
         db.session.commit()

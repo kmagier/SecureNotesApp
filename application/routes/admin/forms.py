@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import DataRequired, EqualTo, Email, Length, ValidationError
-from models.user import User
-from database import db
+from application.models.user import User
+from application import db
 
 
 class AdminEditNoteForm(FlaskForm):

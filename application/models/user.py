@@ -1,9 +1,8 @@
-from database import db
+from application import db, login
 from datetime import datetime
-from flask import redirect, url_for
+from flask import redirect, url_for, current_app
 import bcrypt
 from time import time
-from app import login_manager, app
 from flask_login import UserMixin
 import jwt
 
@@ -34,7 +33,7 @@ class User(UserMixin, db.Model):
                                 secondaryjoin=(followers.c.followed_id == id),
                                 backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     is_admin = db.Column(db.Boolean, unique=False, default=False)
-
+ 
     def __repr__(self):
         return f'<User {self.username}>'
     
@@ -46,12 +45,12 @@ class User(UserMixin, db.Model):
 
     def get_reset_password_token(self, expires_in=300):
         return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
-        app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+        current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
         except:
             return
         return User.query.get(id)
@@ -76,13 +75,13 @@ def check_existing_user(user):
     else:
         return False
 
-@login_manager.user_loader
+@login.user_loader
 def load_user(user_id):
     if user_id is not None:
         return User.query.get(user_id)
     else:
         return None
 
-@login_manager.unauthorized_handler
+@login.unauthorized_handler
 def unauthorized():
     return redirect(url_for('auth.login'))
