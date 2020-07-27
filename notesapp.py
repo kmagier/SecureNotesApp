@@ -1,4 +1,4 @@
 from application import create_app, db
 
 app = create_app() 
-app.static_folder ='static'
+# app.static_folder ='static'

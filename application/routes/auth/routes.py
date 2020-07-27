@@ -93,7 +93,7 @@ def reset_password(token):
     if form.validate_on_submit() and request.method == 'POST':
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Password has been changed', category='info')
+        flash('Password has been changed.', category='info')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
 
