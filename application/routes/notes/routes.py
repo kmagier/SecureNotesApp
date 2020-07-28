@@ -167,9 +167,9 @@ def make_private(note_id):
 def edit_note(note_id):
     title = 'Edit note'
     note = Note.query.get_or_404(note_id)
-    form = NoteForm(obj=note)
-    if request.method == 'POST' and form.validate_on_submit():
-        if form.attachment.data:
+    form = NoteForm()
+    if form.validate_on_submit() and request.method == 'POST':
+        if form.attachment.data is not None:
             attachment = request.files[form.attachment.name]
             if(len(attachment.filename) > 0):
                 filename_prefix = str(uuid.uuid4())
