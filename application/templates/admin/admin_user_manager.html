@@ -1,0 +1,47 @@
+{% extends "admin/admin_dashboard.html" %}
+
+{% block admin %}
+<div class="content">
+        {% if not users %}
+        <h2>No users registered </h2>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Registration date</th>
+                        <th scope="col">Last seen</th>
+                        <th scope="col">Notes added</th>
+                        <th scope="col">Notes subscribed</th>
+                        <th scope="col">Is admin</th>
+                        <th scope="col">Modify</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    {% if user.is_admin %}
+                    <tr class="table-success">
+                        {% else %}
+                        <tr> {% endif %}
+                        <td>{{user.id}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.registered_date.date()}}</td>
+                        <td>{{user.last_seen}}</td>
+                        <td>{{user.notes.count()}}</td>
+                        <td>{{user.subscribed_notes | length }}</td>
+                        <td>{{user.is_admin}}</td>
+                        <td><a href="{{url_for('admin.admin_user_edit', user_id = user.id)}}">Modify</a></td>
+                        <td><a href="{{url_for('admin.admin_user_delete', user_id = user.id)}}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+</div>
+{% endblock %}

@@ -1,32 +1,48 @@
 <nav class="navbar navbar-dark bg-mynav navbar-expand-md">
 
-    <a class="navbar-brand mr-2" href="{{url_for('dashboard.index')}}">NoteApp</a>
+    <a class="navbar-brand mr-2" href="{{url_for('main.index')}}">NoteApp</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navmenu"><span
             class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('dashboard.index')}}">Home</a>
+                <a class="nav-link" href="{{url_for('main.index')}}">Home</a>
             </li>
-            {% if session.logged_in %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('notes.add_note')}}">Add note</a>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    My notes
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="{{url_for('notes.add_note')}}">Add note</a>
+                    <a class="dropdown-item" href="{{url_for('notes.private_notes')}}">Private notes</a>
+                    <a class="dropdown-item" href="{{url_for('notes.subscribed_notes')}}">Subscribed notes</a>
+                </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('notes.private_notes')}}">Private notes</a>
-            </li>
-            {% endif %} 
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('notes.public_notes')}}">Public notes</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            {% if session.logged_in %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
+            {% if current_user.is_authenticated %}
+            <a class="nav-link">Logged as:</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownUser" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">{{current_user.username}}</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+                    <a class="dropdown-item" href="{{url_for('main.user_profile', user_id = current_user.id)}}">My
+                        profile</a>
+                    <a class="dropdown-item" href="{{url_for('main.user_followers_list', user_id = current_user.id)}}">Followers/Followed</a>
+                    <a class="dropdown-item" href="{{url_for('auth.change_password')}}">Change password</a>
+                    {% if current_user.is_admin %}
+                    <a class="dropdown-item" href="{{url_for('admin.admin_dashboard')}}">Admin</a>
+                    {% endif %}
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('auth.change_password')}}">Change Password</a>
+                <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
             </li>
             {% else %}
             <li class="nav-item">

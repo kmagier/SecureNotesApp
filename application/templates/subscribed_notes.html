@@ -1,0 +1,37 @@
+{% extends "user_notes_dashboard.html"%}
+
+{% block notes %}
+{% if not subscribed_notes %}
+<div class="alert alert-info">
+    You don't have any subscribed notes. <a href="{{url_for('notes.public_notes')}}">Subscribe notes.</a>
+</div>
+{% else %}
+{% for subscribed_note in subscribed_notes %}
+<div class="accordion" id="notesAccordion">
+    <div class="card">
+        <div class="card-header" id="heading{{subscribed_note.id}}">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                    data-target="#note_{{subscribed_note.id}}" aria-expanded="false"
+                    aria-controls="note_{{subscribed_note.id}}">
+                    {{subscribed_note.title}}
+                    <a href="{{url_for('main.user_profile', user_id=subscribed_note.owner.id)}}" class="btn btn-primary btn-sm float-right">{{subscribed_note.owner.username}}</a>
+                    {% if subscribed_note.attachment_hash %}
+                    <a href="{{url_for('notes.download_file_private', file_hash = subscribed_note.attachment_hash)}}"
+                        class="btn btn-outline-success btn-sm float-right">Download</a>
+                    {% endif %}
+                    <a href="{{url_for('notes.unsubscribe_note', note_id = subscribed_note.id)}}"
+                        class="btn btn-outline-primary btn-sm float-right">Unsubscribe note</a>
+            </h2>
+        </div>
+        <div id="note_{{subscribed_note.id}}" class="collapse" aria-labelledby="heading{{subscribed_note.id}}"
+            data-parent="#notesAccordion">
+            <div class="card-body">
+                {{subscribed_note.description}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

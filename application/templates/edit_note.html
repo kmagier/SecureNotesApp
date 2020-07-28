@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% include "includes/flash_info.html" %}
+
+<div class="form-group purple-border">
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {% for error in form.description.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        <h2>{{ title }} </h2>
+        <div class="card">
+            <div class="card-header">
+                {{ form.title(placeholder="Title")}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Note description</h5>
+                <p class="card-text">{{ form.description(class_="form-control", placeholder="Description") }}</p>
+                {% if note.attachment_hash %}
+                <h5 class="card-title">Uploaded file:</h5>
+                <a href="{{url_for('notes.download_file_private', file_hash = note.attachment_hash)}}"
+                    class="btn btn-primary btn-sm">Download</a>
+                <button onClick="delete_file(this);" data-id="{{note.id}}" class="delete btn btn-danger btn-sm">Delete
+                    file</button><br><br>
+                {% else %}
+                <h5 class="card-title">Upload file:</h5>
+                {{ form.attachment }} <br>
+                {% endif %}
+                {% for error in form.attachment.errors %}
+                <div style="color: red;">[{{ error }}]</div>
+                {% endfor %}
+                {{ form.submit(class_="btn btn-success") }}
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+     const BASE_URL = 'http://localhost:5000/private-notes'
+
+     function delete_file(data) {
+        let item_id = data.getAttribute("data-id");
+        fetch(BASE_URL + '/files/delete/' + item_id, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(result => location.reload())
+            .catch(err => console.log(err))
+    }
+
+</script>
+{% endblock %}

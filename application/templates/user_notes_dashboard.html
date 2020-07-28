@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+	<h2>USER NOTES DASHBOARD</h2>
+	<div class="admin-nav">
+		<a href="{{url_for('notes.private_notes')}}">Private notes</a> |
+		<a href="{{url_for('notes.subscribed_notes')}}">Subscribed notes</a> |
+		<a href="{{url_for('notes.add_note')}}">Add note</a>
+    </div>
+</div>
+<hr>
+<!-- {% block admin %}
+{% endblock %} -->
+{% block notes %}
+{% endblock %}
+
+{% endblock %}
