@@ -1,15 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content%}
-{% if form.errors %}
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-{% endif %}
+
+{% include "includes/flash_info.html" %}
 
 <div class="signup-form">
     <h2>Log in</h2>
@@ -29,6 +22,7 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </div>
+        Forgot password? <a href="{{url_for('auth.reset_password_request')}}">Reset password</a>
         <div class="form-group">
         {{ form.submit(class_="btn btn-success btn-lg btn-block") }}
         </div>

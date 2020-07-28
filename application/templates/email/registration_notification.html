@@ -1,0 +1,10 @@
+<p>Dear {{ user.username }},</p>
+<p>
+    Thank you for creating an account in NoteApp.
+    You can now log in 
+    <a href="{{ url_for('auth.login', _external=True) }}"> here
+    </a> using your username and password..
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('auth.login', _external=True) }}</p>
+<p></p>

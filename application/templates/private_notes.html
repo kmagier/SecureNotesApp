@@ -1,0 +1,119 @@
+{% extends "user_notes_dashboard.html"%}
+
+{% block notes %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category =='info' %}
+                <div class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+            {% elif category == 'success' %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% elif category == 'warning' %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>    
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% if not private_notes %}
+<div class="alert alert-info">
+    You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a>
+</div>
+{% else %}
+{% for note in private_notes %}
+<div class="accordion" id="notesAccordion">
+    <div class="card">
+        <div class="card-header" id="heading{{note.id}}">
+            <h5 class="mb-0">
+                <button class="btn btn-link text-left" type="button" data-toggle="collapse"
+                    data-target="#note_{{note.id}}" aria-expanded="false" aria-controls="note_{{note.id}}">
+                    {{note.title}}
+                    <button onClick="delete_note(this);" data-id="{{note.id}}"
+                        class="delete btn btn-outline-danger btn-sm float-right">Delete</button>
+                    {% if note.attachment_hash %}
+                    <button onClick="delete_file(this);" data-id="{{note.id}}"
+                        class="delete btn btn-outline-warning btn-sm float-right">Delete file</button>
+                    <a href="{{url_for('notes.download_file_private', file_hash = note.attachment_hash)}}"
+                        class="btn btn-outline-info btn-sm float-right">Download</a>
+                    {% else %}
+                    <input type="file" id="{{note.id}}" name="note" onchange="upload_file(this);"
+                        style="display:none" />
+                    <button class="btn btn-outline-success btn-sm float-right"
+                        onclick="document.getElementById('{{note.id}}').click();">Upload</button>
+                    {% endif %}
+                    <a href="{{url_for('notes.edit_note', note_id = note.id)}}"
+                        class="btn btn-outline-primary btn-sm float-right">Edit</a>
+                    {% if note.is_public == False %}
+                    <a href="{{url_for('notes.make_public', note_id=note.id)}}"
+                        class="btn btn-outline-secondary btn-sm float-right">Make public</a>
+                    {% else %}
+                    <a href="{{url_for('notes.make_private', note_id=note.id)}}"
+                        class="btn btn-secondary btn-sm float-right">Make
+                        private</a>
+                    {% endif %}
+            </h5>
+        </div>
+        <div id="note_{{note.id}}" class="collapse" aria-labelledby="heading{{note.id}}" data-parent="#notesAccordion">
+            <div class="card-body">
+                {{note.description}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<script>
+    const BASE_URL = 'http://localhost:5000/private-notes'
+
+
+    function delete_note(data) {
+        let item_id = data.getAttribute("data-id");
+        fetch(BASE_URL + '/delete/' + item_id, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(result => location.reload())
+            .catch(err => console.log(err))
+    }
+
+
+    function delete_file(data) {
+        let item_id = data.getAttribute("data-id");
+        fetch(BASE_URL + '/files/delete/' + item_id, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(result => location.reload())
+            .catch(err => console.log(err))
+    }
+
+    function upload_file(data) {
+        let fileData = new FormData();
+        let file = data.files[0];
+        let item_id = data.getAttribute("id");
+        fileData.append("Note", file)
+        console.log(item_id);
+        console.log(file);
+        fetch(BASE_URL + '/files/' + item_id, {
+            method: 'PATCH',
+            credentials: 'include',
+            body: fileData
+        })
+            .then(response => response.json())
+            .then(data => location.reload())
+            .catch(err => console.log(err))
+    }
+
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+	<h2>ADMIN DASHBOARD</h2>
+	<div class="admin-nav">
+		<a href="{{url_for('admin.admin_dashboard')}}">Dashboard</a> |
+		<a href="{{url_for('admin.admin_user_list')}}">Manage users</a> |
+		<a href="{{url_for('admin.admin_notes_list')}}">Manage notes</a>
+	</div>
+{% block admin %}
+{% endblock %}
+</div>
+{% endblock %}

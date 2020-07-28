@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content">
+    <form method="POST" enctype="multipart/form-data">
+        <h2>{{ title}} </h2>
+        {% if user %}
+        <div class="alert alert-danger">
+            Are you sure, you want to delete user: <b>{{ user.username }}</b> with ID: <b>{{ user.id }}</b> ? All user
+            notes and files will
+            be deleted.
+            
+        </div>
+        <a href="{{url_for('admin.admin_user_list')}}" class="btn btn-danger">Cancel</a>
+        {% elif note %}
+        <div class="alert alert-danger">
+            Are you sure, you want to delete note: <b>{{ note.title }}</b> with ID: <b>{{ note.id }}</b> of user:
+            <b>{{ note.owner.username }}</b> ?
+            Note and file will be deleted.
+        </div>
+        <a href="{{url_for('admin.admin_notes_list')}}" class="btn btn-danger">Cancel</a>
+        {% endif %}
+        
+        <button type="submit" class="btn btn-success">Delete</button>
+        
+    </form>
+</div>
+{% endblock %}

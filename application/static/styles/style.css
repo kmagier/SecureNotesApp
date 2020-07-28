@@ -12,12 +12,17 @@ header h1 {
 }
 
 nav {
+    max-width: 1024px;
     max-height: auto;
+    margin-left: auto;
+    margin-right: auto;
     border: 1px solid black;
     margin-bottom: 15px;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
 }
 .bg-mynav {
-    background-color: #999;
+    background-color: rgb(0, 146, 122);
 }
 
 .navbar-nav li.nav-item a.nav-link {
@@ -78,33 +83,8 @@ article p {
 table {
 	margin-left: auto;
     margin-right: auto;
-    table-layout: fixed;
     width: 100%;
     
-}
-table, tr, td {
-	border: 1px solid #E2C2B2;
-}
-
-table td {
-    word-wrap: break-word;         /* All browsers since IE 5.5+ */
-    overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
-}
-
-.caption-bottom {
-	caption-side: bottom;
-}
-
-td:nth-child(odd) {
-	background-color: #F4D3C3;
-}
-
-td:nth-child(even) {
-	background-color: #FEEBE1;
-}
-
-thead tr {
-	background-color: #dbda9e !important;
 }
 
 #form-messages {
@@ -119,50 +99,6 @@ thead tr {
     width: 400px;
 }
 
-/* .registration-form {
-    width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.registration-form label {
-    float: left;
-    width: 150px;
-    text-align: right;
-}
-
-.registration-form label::after {
-    content: ":";
-}
-
-.registration-form input {
-    float: left;
-    width: 200px;
-}
-
-#button-reg-form {
-    float: inline-start;
-    margin-left: 150px;
-    margin-right: auto;
-    width: 205px;
-}
-
-label.required::after {
-    color: red;
-    content: "*:";
-}
-
-.form-control{
-    height: 40px;
-    box-shadow: none;
-    color: #969fa4;
-}
-.form-control:focus{
-    border-color: #5cb85c;
-}
-.form-control, .btn{        
-    border-radius: 3px;
-} */
 .signup-form{
     width: 400px;
     margin: 0 auto;
@@ -229,6 +165,10 @@ label.required::after {
     text-decoration: underline;
 }  
 
+.signup-form input[type="checkbox"] {
+    margin: 6px 10px 0px 10px;
+}
+
 .purple-border textarea {
     border: 1px solid #ba68c8;
 }
@@ -236,3 +176,173 @@ label.required::after {
     border: 1px solid #ba68c8;
     box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
 }
+
+.user-profile {
+    display: block;
+    background-color: #e6f8ff;
+    border: thin solid cornflowerblue;
+    border-radius: 0.25rem;
+}
+
+.user-profile-btns {
+    display: inline;
+    margin: 2px;
+    float: right;
+}
+
+.user-profile-info {
+    width: 100%;
+    display: block;
+    color: midnightblue;
+    background-color: #cee6ff;
+    border: cornflowerblue;
+    border-style: solid none solid none;
+    border-width: thin;
+}
+
+div.user-profile > h1 {
+    display: inline;
+    margin: 5px;
+}
+
+div.user-profile > p {
+    margin: 5px 5px 5px 5px;
+}
+
+div.user-profile-info > p {
+    margin: 5px;
+}
+
+#note-info-container {
+    margin: 2px 0px 0px 5px;
+    float: left;
+    width: 45%;
+}
+
+#user-followers-container {
+    margin: 2px;
+    width: 45%;
+    overflow: hidden;
+    text-align: right;
+}
+
+.user-about-me {
+    display: block;
+    word-break: break-all;
+    margin: 5px;
+}
+
+.private-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: darkseagreen;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto;
+}
+
+.subscribed-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: #82b4bb;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto;    
+}
+
+.public-notes-info {
+    display: block;
+    /* float: unset; */
+    background-color: #82b4bb;
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    text-align: center;
+    width: 500px;
+    margin: auto; 
+}
+
+.admin-nav {
+    margin: auto;
+    text-align: center;
+}
+
+div.admin-dashboard > h2, h3 {
+    text-align: center;
+    color: darkred;
+} 
+
+input#submit {
+    margin: 10px 0px 0px 0px;
+}
+
+.user-notes-list {
+    width: 100%;
+    display: block;
+    color: midnightblue;
+    background-color: #cee6ff;
+    border: cornflowerblue;
+    border-style: solid none solid none;
+    border-width: thin;
+}
+
+.followers-box {
+    width: 100%;
+    display: block;
+}
+
+/* .follower-frame {
+    width: 509px;
+    display: inline-block;
+    border: rgb(107 108 255);
+    border-style: solid;
+    border-width: thin;
+    background-color: #ccedff;
+} */
+
+
+
+.followers {
+    position: relative;
+    padding: .3rem 1.25rem;
+    margin-bottom: .3rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.followers-frame {
+    display: inline-block;
+    width: 509px;
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+.followers span {
+    margin: 1px;
+    float: right;
+}
+/* .profile-edit-form {
+    width: 300px ;
+    margin: 0 auto;
+    background-color: cadetblue;
+    border-style: solid;
+    border-width: thin;
+
+}
+
+.profile-edit-form form{
+    text-align: center;
+    position: relative;
+
+}
+.profile-edit-form label{
+    color: red; */
+
+/* } */
