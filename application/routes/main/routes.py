@@ -17,7 +17,6 @@ def before_request():
 @bp.route('/index')
 @bp.route('/')
 def index():
-    current_app.logger.debug('dashboard.py debug')
     # session_id = request.cookies.get('session_id', '')
     # current_app.logger.debug(session_id)
     # username = get_username(session_id)

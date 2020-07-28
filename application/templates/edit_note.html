@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
+{% include "includes/flash_info.html" %}
+
 <div class="form-group purple-border">
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
@@ -25,6 +28,9 @@
                 <h5 class="card-title">Upload file:</h5>
                 {{ form.attachment }} <br>
                 {% endif %}
+                {% for error in form.attachment.errors %}
+                <div style="color: red;">[{{ error }}]</div>
+                {% endfor %}
                 {{ form.submit(class_="btn btn-success") }}
             </div>
         </div>
@@ -32,7 +38,7 @@
 </div>
 
 <script>
-     const BASE_URL = 'https://localhost:8080/private-notes'
+     const BASE_URL = 'http://localhost:5000/private-notes'
 
      function delete_file(data) {
         let item_id = data.getAttribute("data-id");

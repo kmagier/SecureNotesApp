@@ -2,15 +2,9 @@
 
 {% block notes %}
 <h3>ADD NEW NOTE</h3>
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+
+{% include "includes/flash_info.html" %}
+
 <div class="form-group purple-border">
     <form action="{{url_for('notes.add_note')}}" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
