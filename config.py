@@ -9,7 +9,6 @@ HOST = 'psql' + ':' + PORT
 DB_NAME = os.environ.get('POSTGRES_DB')
 DB_URI = DB_TYPE + "+" + DB_CONNECTOR +'://' + DB_USERNAME +':' + DB_PASSWORD + "@" + HOST + '/' + DB_NAME
 
-
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'some-random-secret-key'
     DEBUG = True
@@ -20,4 +19,4 @@ class Config(object):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    FILE_UPLOADS = '/application/static/files' 
+    # FILE_UPLOADS = '/application/static/files' 

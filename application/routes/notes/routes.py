@@ -36,7 +36,7 @@ def add_note():
             note = Note(title=title, description=description, owner_id=user.id)
             db.session.add(note)
         db.session.commit()
-        flash('Note added successfully')
+        flash('Note added successfully', category='success')
         return redirect(request.url)
     return render_template("add_note.html", form=form)
 
