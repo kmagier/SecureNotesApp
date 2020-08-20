@@ -7,39 +7,45 @@ from application import db
 import random, string, os
 from .forms import AdminEditProfileForm, AdminEditNoteForm, AdminPostForm
 from application.routes.admin import bp
+from functools import wraps
 import uuid
 
 
 DIR_PATH = 'static/files/'
 
+def admin_required(f):
+    @wraps(f)
+    def func(*args, **kwargs):
+        if not current_user.is_admin:
+            flash("You don't have permission", category='warning')
+            abort(403)
+        return f(*args, **kwargs)
+    return func
+
 @bp.route('/dashboard')
 @login_required
+@admin_required
 def admin_dashboard():
-    if not current_user.is_admin:
-        abort(403)
     return render_template('admin/admin_dashboard.html')
 
 @bp.route('/users')
 @login_required
+@admin_required
 def admin_user_list():
-    if not current_user.is_admin:
-        abort(403)
     users = User.query.order_by(User.registered_date.asc()).all()
     return render_template('admin/admin_user_manager.html', users=users)
 
 @bp.route('/notes')
 @login_required
+@admin_required
 def admin_notes_list():
-    if not current_user.is_admin:
-        abort(403)
     notes = Note.query.order_by(Note.timestamp.asc()).all()
     return render_template('admin/admin_notes_manager.html', notes=notes)
 
 @bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_user_edit(user_id):
-    if not current_user.is_admin:
-        abort(403)
     user = User.query.get_or_404(user_id)
     form = AdminEditProfileForm(user.username)
     if request.method == 'POST' and form.validate_on_submit:
@@ -56,9 +62,8 @@ def admin_user_edit(user_id):
 
 @bp.route('/users/delete/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_user_delete(user_id):
-    if not current_user.is_admin:
-        abort(403)
     user = User.query.get_or_404(user_id)
     if request.method == 'POST':
         db.session.delete(user)
@@ -68,9 +73,8 @@ def admin_user_delete(user_id):
 
 @bp.route('/notes/edit/<int:note_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_note_edit(note_id):
-    if not current_user.is_admin:
-        abort(403)
     note = Note.query.get_or_404(note_id)
     form = AdminEditNoteForm(obj=note)
     if request.method == 'POST' and form.validate_on_submit():
@@ -94,9 +98,8 @@ def admin_note_edit(note_id):
 
 @bp.route('/notes/delete/<int:note_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_note_delete(note_id):
-    if not current_user.is_admin:
-        abort(403)
     note = Note.query.get_or_404(note_id)
     form = AdminEditNoteForm(obj=note)
     if request.method == 'POST':
@@ -110,9 +113,8 @@ def admin_note_delete(note_id):
 
 @bp.route('/post', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_post():
-    if not current_user.is_admin:
-        abort(403)
     form = AdminPostForm(request.form)
     if request.method == 'POST' and form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author_id=current_user.id)
@@ -123,9 +125,8 @@ def admin_post():
 
 @bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_post_edit(post_id):
-    if not current_user.is_admin:
-        abort(403)
     post = Post.query.get_or_404(post_id)
     form = AdminPostForm(obj=post)
     if request.method == 'POST' and form.validate_on_submit():
@@ -137,9 +138,8 @@ def admin_post_edit(post_id):
 
 @bp.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_post_delete(post_id):
-    if not current_user.is_admin:
-        abort(403)
     post = Post.query.get_or_404(post_id)
     if request.method == 'POST':
         db.session.delete(post)

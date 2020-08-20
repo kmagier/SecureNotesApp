@@ -4,15 +4,17 @@
         <div class="media-body">
           <div class="article-metadata">
             <a class="mr-2" href="{{url_for('main.user_profile', user_id=post.author.id)}}">{{ post.author.username }}</a>
-            <small class="text-muted">{{post.timestamp.date()}} {{post.timestamp.time().isoformat(timespec='minutes')}}</small>
+			<small class="text-muted">{{post.timestamp.date()}} {{post.timestamp.time().isoformat(timespec='minutes')}}</small>
+			{% if current_user.is_admin %}
             <span class="posts-control">
-            <form method="GET" action="{{url_for('admin.admin_post_edit', post_id=post.id)}}">
-              <button type="submit" class="btn btn-info btn-sm">Edit</button>
-            </form>
-            <form method="POST" action="{{url_for('admin.admin_post_delete', post_id=post.id)}}">
-            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-            </form>
-            </span>
+              <form method="GET" action="{{url_for('admin.admin_post_edit', post_id=post.id)}}">
+                <button type="submit" class="btn btn-info btn-sm">Edit</button>
+              </form>
+              <form method="POST" action="{{url_for('admin.admin_post_delete', post_id=post.id)}}">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+			</span>
+			{% endif %}
           </div>
           <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
           <p class="article-content">{{ post.content }}</p>
