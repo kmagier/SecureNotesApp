@@ -1,0 +1,14 @@
+{% if posts %}
+    {% for post in posts %}
+    <article class="media content-section">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="{{url_for('main.user_profile', user_id=post.author.id)}}">{{ post.author.username }}</a>
+            <small class="text-muted">{{post.timestamp.date()}} {{post.timestamp.time().isoformat(timespec='minutes')}}</small>
+          </div>
+          <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+          <p class="article-content">{{ post.content }}</p>
+        </div>
+      </article>
+      {% endfor %}
+{% endif %}
