@@ -1,26 +1,10 @@
 {% extends "user_notes_dashboard.html"%}
 
 {% block notes %}
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            {% if category =='info' %}
-                <div class="alert alert-info" role="alert">
-                    {{ message }}
-                </div>
-            {% elif category == 'success' %}
-                <div class="alert alert-success" role="alert">
-                    {{ message }}
-                </div>
-            {% elif category == 'warning' %}
-                <div class="alert alert-danger" role="alert">
-                    {{ message }}
-                </div>    
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+
+{% include "includes/flash_info.html" %}
 {% if not private_notes %}
+
 <div class="alert alert-info">
     You don't have any private notes. <a href="{{url_for('notes.add_note')}}">Add notes.</a>
 </div>
@@ -69,7 +53,7 @@
 {% endif %}
 
 <script>
-    const BASE_URL = 'http://localhost:5000/private-notes'
+    const BASE_URL = 'https://localhost:5000/private-notes'
 
 
     function delete_note(data) {

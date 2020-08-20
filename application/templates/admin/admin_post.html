@@ -4,7 +4,7 @@
 {% include "includes/flash_info.html" %}
 
 <div class="form-group purple-border">
-    <form action="{{url_for('admin.admin_post')}}" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {% for error in form.title.errors %}
         <span style="color: red;">[{{ error }}]</span>

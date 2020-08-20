@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 
 {% block content%}
+
+{% include "includes/flash_info.html" %}
+
 <div class="user-profile">
     <h1>{{user.username}}</h1>
     <span class="user-profile-btns">

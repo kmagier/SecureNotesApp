@@ -27,3 +27,8 @@ class AdminEditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('This name is already being used')
+
+class AdminPostForm(FlaskForm):
+    title = StringField('Title', validators=[Length(min=1, max=150)])
+    content = TextAreaField('Content', validators=[Length(min=1, max=150)], render_kw={"rows": 4})
+    submit = SubmitField('Submit')

@@ -77,7 +77,7 @@ article h3 {
 }
 
 article p {
-	color: red;
+	color: #004085;
 }
 
 table {
@@ -346,3 +346,66 @@ input#submit {
     color: red; */
 
 /* } */
+
+.content-section {
+    background: #bfffea26;
+    padding: 5px 20px;
+    border: 1px solid #1e7e34;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  
+  .article-title {
+    color: #444444;
+  }
+  
+  a.article-title:hover {
+    color: #428bca;
+    text-decoration: none;
+  }
+  
+  .article-content {
+    white-space: pre-line;
+  }
+  
+  .article-img {
+    height: 65px;
+    width: 65px;
+    margin-right: 16px;
+  }
+  
+  .article-metadata {
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #117a8b
+  }
+  
+  .article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+  }
+
+  .posts {
+      display: block;
+  }
+
+  .admin-add-post {
+      max-width: 1024px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      margin-top: 5px;
+      margin-bottom: 5px;
+  }
+  
+  .posts-pagination {
+    border-top: 1px solid cornflowerblue;
+  }
+
+  .posts-control {
+      float: right;
+  }
+
+  .posts-control form {
+      display: inline;
+  }

@@ -2,9 +2,10 @@ from flask import Flask, Blueprint, render_template, redirect, url_for, session,
 from flask_login import current_user, login_required
 from application.models.user import User
 from application.models.note import Note
+from application.models.post import Post
 from application import db
 import random, string, os
-from .forms import AdminEditProfileForm, AdminEditNoteForm
+from .forms import AdminEditProfileForm, AdminEditNoteForm, AdminPostForm
 from application.routes.admin import bp
 import uuid
 
@@ -106,6 +107,45 @@ def admin_note_delete(note_id):
         return redirect(url_for('admin.admin_notes_list'))
     return render_template('admin/admin_delete.html', form=form, title='Delete note', note=note)
 
+
+@bp.route('/post', methods=['GET', 'POST'])
+@login_required
+def admin_post():
+    if not current_user.is_admin:
+        abort(403)
+    form = AdminPostForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author_id=current_user.id)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('main.index'))
+    return render_template('admin/admin_post.html', form=form)
+
+@bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_post_edit(post_id):
+    if not current_user.is_admin:
+        abort(403)
+    post = Post.query.get_or_404(post_id)
+    form = AdminPostForm(obj=post)
+    if request.method == 'POST' and form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        return redirect(url_for('main.index'))
+    return render_template('admin/admin_post.html', form=form)
+
+@bp.route('/post/<int:post_id>/delete', methods=['GET', 'POST'])
+@login_required
+def admin_post_delete(post_id):
+    if not current_user.is_admin:
+        abort(403)
+    post = Post.query.get_or_404(post_id)
+    if request.method == 'POST':
+        db.session.delete(post)
+        db.session.commit()
+        return redirect(request.referrer)
+    return redirect(url_for('main.index'))
 
 
 

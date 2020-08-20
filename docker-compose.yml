@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./Docker/app/Dockerfile
-    command: gunicorn --bind 0.0.0.0:5000 notesapp:app
+    # command: gunicorn --bind 0.0.0.0:5000 notesapp:app
     ports:
       - "5000:5000"
     volumes:
