@@ -28,7 +28,7 @@
                         {% else %}
                         <tr> {% endif %}
                         <td>{{user.id}}</td>
-                        <td>{{user.username}}</td>
+                        <td><a href="{{url_for('main.user_profile', user_id=user.id)}}">{{user.username}}</a></td>
                         <td>{{user.email}}</td>
                         <td>{{user.registered_date.date()}}</td>
                         <td>{{user.last_seen}}</td>

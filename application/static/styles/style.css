@@ -409,3 +409,61 @@ input#submit {
   .posts-control form {
       display: inline;
   }
+
+  .note-frame {
+      background-color: #effdff;
+    border-radius: 5px;
+    border: 1px solid black; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    overflow: hidden
+  }
+
+  .note-date {
+      padding-left: 5px;
+      border-bottom: 1px solid black;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background-color: #99f19e;
+
+  }
+  
+  .note-title {
+      display: inline-flex;
+      margin: 10px;
+      padding-left: 10px;
+      text-align: center;
+      max-width: 200px;
+      white-space: nowrap;
+
+  }
+
+  .note-control {
+      padding: 5px;
+      float: right;
+  }
+  .public-note-info{
+    padding-left: 5px;
+    border-bottom: 1px solid black;
+    background-color: #f9d7d7;
+  }
+
+  .public-note-date{
+  }
+  .public-note-owner{
+      float:right;
+      padding-right: 5px;
+
+  }
+
+  .public-note-frame {
+    background-color: #fff5f5;
+    border-radius: 5px;
+    border: 1px solid black; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    overflow: hidden
+}
+
+  
+  
