@@ -1,46 +1,61 @@
 {% extends "layout.html" %}
 
-{% block content%}
+{% block content %}
 
 {% include "includes/flash_info.html" %}
-
+<div class="user-controls-container">
+    {% if current_user == user %}
+    <a href="{{url_for('main.edit_profile')}}" class="btn btn-success btn-sm user-profile-control">Edit your profile</a>
+    {% elif current_user!= user and not current_user.is_following(user) %}
+    <a href="{{url_for('main.follow', user_id = user.id)}}"
+        class="btn btn-primary btn-sm user-profile-control">Follow</a>
+    {% elif current_user.is_following(user) %}
+    <a href="{{url_for('main.unfollow', user_id = user.id)}}"
+        class="btn btn-primary btn-sm user-profile-control">Unfollow</a>
+    {% endif %}
+</div>
 <div class="user-profile">
-    <h1>{{user.username}}</h1>
-    <span class="user-profile-btns">
-        {% if current_user.id == user.id %}
-        <a href="{{url_for('main.edit_profile')}}" class="btn btn-success btn-sm">Edit your profile</a>
-        {% elif current_user.id != user.id and not current_user.is_following(user) %}
-        <a href="{{url_for('main.follow', user_id = user.id)}}" class="btn btn-primary btn-sm">Follow</a>
-        {% elif current_user.is_following(user) %}
-        <a href="{{url_for('main.unfollow', user_id = user.id)}}" class="btn btn-primary btn-sm">Unfollow</a>
+    <h1>{{ user.username }}</h1>
+    <div class="user-profile-avatar">
+        {% if user.avatar %}
+        <img src="{{url_for('static', filename=user.avatar)}}" alt="{{user.username}} avatar">
+        {% else %}
+        <div class="user-no-avatar-container">
+            <div class="user-no-avatar">
+                No picture available
+            </div>
+        </div>
         {% endif %}
-    </span>
-
-    <p>Registered on: {{user.registered_date.date()}}</p>
-    <p>Last seen: {{user.last_seen.date()}} {{user.last_seen.time().isoformat(timespec='minutes')}}</p>
+    </div>
     <div class="user-profile-info">
+        <small>Registered on: {{user.registered_date.date()}}</small> <br>
+        <small>Last seen: {{user.last_seen.date()}} {{user.last_seen.time().isoformat(timespec='minutes')}}</small>
+    </div>
+    <div>
         <div id="note-info-container">
-            <p>Notes added: {{ user.notes.count() }}</p>
-            <p>Notes subscribed: {{ user.subscribed_notes|length }}</p>
+            <small>Notes added: {{ user.notes.count() }}</small><br>
+            <small>Notes subscribed: {{ user.subscribed_notes|length }}</small>
         </div>
         <div id="user-followers-container">
-            <p>Users following: {{ user.followers.count() }}</p>
-            <p>Users followed: {{ user.followed.count() }}</p>
+            <small>Users following: {{ user.followers.count() }}</small><br>
+            <small>Users followed: {{ user.followed.count() }}</small>
         </div>
     </div>
-    <div class="user-about-me">
-        <h4>About me:</h4>
-        <p>{{user.about_me}}</p>
+    <div class="user-about-me-container">
+        <div class="user-about-me">
+            <h4>About me:</h4>
+            <p>{{user.about_me}}</p>
+        </div>
     </div>
-
-    
     <div class="user-notes-list">
-        <h4>User notes:</h4>   
-        {% if notes %} 
-        <a href="{{url_for('main.user_notes', user_id=user.id)}}" class="btn btn-primary btn-sm">User notes</a>
+        <h4>User notes:</h4>
+        {% if notes %}
+        Public notes:
+        <a href="{{url_for('main.user_notes', user_id=user.id)}}" style="color:blueviolet"><b>{{notes|length}}</b></a>
         {% else %}
         <p>No public notes</p>
         {% endif %}
     </div>
+</div>
 </div>
 {% endblock %}

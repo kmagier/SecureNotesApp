@@ -3,7 +3,6 @@ body {
     max-height: auto;
 	margin-left: auto;
 	margin-right: auto;
-	padding-bottom: 20px;
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -176,28 +175,56 @@ table {
     border: 1px solid #ba68c8;
     box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
 }
+.user-controls-container {
+    display: block;
+    margin: 5px 0px 5px 0px;
+    overflow: auto;
+}
+.user-profile-control {
+    float: right;
+    margin: 2px;
+}
+.test-class {
+    border: 1px solid red;
+    color: brown;
+}
 
 .user-profile {
     display: block;
+    margin-top: 3px;
     background-color: #e6f8ff;
     border: thin solid cornflowerblue;
     border-radius: 0.25rem;
+} 
+
+.user-profile-avatar {
+    margin: 5px 0px 5px 5px;
 }
 
-.user-profile-btns {
-    display: inline;
-    margin: 2px;
-    float: right;
+.user-profile-avatar img{
+    max-width: 150px;
+    height: auto;
+}
+.user-no-avatar-container {
+    border: 1px dashed black;
+    width: 100px;
+    height: 100px;
+}
+
+.user-no-avatar {
+    text-align: center;
+    width: 120px;
+    height: 120px;
+    padding: 20px;
+    -webkit-transform: rotate(-60deg);
 }
 
 .user-profile-info {
-    width: 100%;
     display: block;
+    padding-left: 5px;
     color: midnightblue;
     background-color: #cee6ff;
-    border: cornflowerblue;
-    border-style: solid none solid none;
-    border-width: thin;
+    border-top: 1px solid cornflowerblue;
 }
 
 div.user-profile > h1 {
@@ -214,27 +241,40 @@ div.user-profile-info > p {
 }
 
 #note-info-container {
-    margin: 2px 0px 0px 5px;
+    padding: 2px 0px 0px 5px;
     float: left;
     width: 45%;
 }
 
 #user-followers-container {
-    margin: 2px;
+    padding: 2px;
     width: 45%;
     overflow: hidden;
     text-align: right;
 }
 
+.user-about-me-container {
+    border-top: 1px solid cornflowerblue;
+    background-color: #cee6ff;
+    overflow: hidden;
+}
+
 .user-about-me {
+    padding-left: 5px;
     display: block;
     word-break: break-all;
-    margin: 5px;
+}
+
+.user-notes-list {
+    padding-left: 5px;
+    display: block;
+    border: cornflowerblue;
+    border-style: solid none none none;
+    border-width: thin;
 }
 
 .private-notes-info {
     display: block;
-    /* float: unset; */
     background-color: darkseagreen;
     border-style: solid;
     border-width: thin;
@@ -246,7 +286,6 @@ div.user-profile-info > p {
 
 .subscribed-notes-info {
     display: block;
-    /* float: unset; */
     background-color: #82b4bb;
     border-style: solid;
     border-width: thin;
@@ -258,7 +297,6 @@ div.user-profile-info > p {
 
 .public-notes-info {
     display: block;
-    /* float: unset; */
     background-color: #82b4bb;
     border-style: solid;
     border-width: thin;
@@ -266,7 +304,7 @@ div.user-profile-info > p {
     text-align: center;
     width: 500px;
     margin: auto; 
-}
+} 
 
 .admin-nav {
     margin: auto;
@@ -282,31 +320,12 @@ input#submit {
     margin: 10px 0px 0px 0px;
 }
 
-.user-notes-list {
-    width: 100%;
-    display: block;
-    color: midnightblue;
-    background-color: #cee6ff;
-    border: cornflowerblue;
-    border-style: solid none solid none;
-    border-width: thin;
-}
+
 
 .followers-box {
     width: 100%;
     display: block;
 }
-
-/* .follower-frame {
-    width: 509px;
-    display: inline-block;
-    border: rgb(107 108 255);
-    border-style: solid;
-    border-width: thin;
-    background-color: #ccedff;
-} */
-
-
 
 .followers {
     position: relative;
@@ -328,24 +347,6 @@ input#submit {
     margin: 1px;
     float: right;
 }
-/* .profile-edit-form {
-    width: 300px ;
-    margin: 0 auto;
-    background-color: cadetblue;
-    border-style: solid;
-    border-width: thin;
-
-}
-
-.profile-edit-form form{
-    text-align: center;
-    position: relative;
-
-}
-.profile-edit-form label{
-    color: red; */
-
-/* } */
 
 .content-section {
     background: #bfffea26;

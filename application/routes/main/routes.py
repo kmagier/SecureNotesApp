@@ -7,6 +7,7 @@ from application.models.post import Post
 from application.forms.forms import EditProfileForm
 from application import db
 import os
+import uuid
 from application.routes.main import bp
 
 @bp.before_app_request
@@ -40,6 +41,10 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
+        photo = form.photo.data
+        filename = str(uuid.uuid4()) + "." + photo.filename.split('.')[-1]
+        photo.save(os.path.join(current_app.static_folder, 'avatars', filename))
+        current_user.avatar = os.path.join('avatars', filename)
         db.session.commit() 
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':

@@ -59,6 +59,7 @@ class PasswordChangeForm(FlaskForm):
         
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=1, max=40)])
+    photo = FileField('Profile pic')
     about_me = TextAreaField('About me', validators=[Length(min=0, max=300)])
     submit = SubmitField('Submit')
 

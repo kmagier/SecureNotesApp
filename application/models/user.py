@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(40), index=True, unique=True)
     email = db.Column(db.String(80), index=True, unique=True)
     password_hash = db.Column(db.String(256), index=False, unique=True)
+    avatar = db.Column(db.String(256), index=False, unique=False, nullable=True)
     about_me = db.Column(db.String(300))
     registered_date = db.Column(db.DateTime, default=datetime.now())
     last_seen = db.Column(db.DateTime, default=datetime.now())
