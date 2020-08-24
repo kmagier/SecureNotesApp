@@ -42,9 +42,10 @@ class NoteForm(FlaskForm):
     submit = SubmitField('Submit')
 
     def validate_attachment(self, field):
-        if request.files[self.attachment.name]:
-            if request.files[self.attachment.name].filename.split('.')[-1] not in ALLOWED_NOTE_EXTENSIONS:
-                raise ValidationError('Extension not supported.')
+        if request.files:
+            if request.files[self.attachment.name]:
+                if request.files[self.attachment.name].filename.split('.')[-1] not in ALLOWED_NOTE_EXTENSIONS:
+                    raise ValidationError('Extension not supported.')
 
 class PasswordChangeForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])

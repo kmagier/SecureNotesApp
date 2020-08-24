@@ -15,10 +15,11 @@
             <small>Added: {{note.timestamp.date()}} {{note.timestamp.time().isoformat(timespec='minutes')}}</small>
         </span>
         <span class="public-note-owner">
-            <small>Owner:  <b><a href="{{url_for('main.user_profile', user_id=note.owner.id)}}">{{note.owner.username}}</a></b></small>
+            <small>Owner: <b><a
+                        href="{{url_for('main.user_profile', user_id=note.owner.id)}}">{{note.owner.username}}</a></b></small>
         </span>
     </div>
-    <div class="note-title">{{ note.title }}</div>
+    <div class="note-title"><a href="{{url_for('notes.note_detail', note_id = note.id )}}">{{ note.title }}</a></div>
     <span class="note-control">
         {% if note.attachment_hash %}
         <a href="{{url_for('notes.download_file_public', file_hash = note.attachment_hash)}}"
@@ -34,6 +35,17 @@
     </span>
 </div>
 {% endfor %}
+{% endif %}
+
+{% if prev_url or next_url %}
+<div class="posts-pagination">
+    {% if prev_url %}
+    <a href="{{ prev_url }}">Newer notes</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}" style="float: right;">Older notes</a>
+    {% endif %}
+</div>
 {% endif %}
 
 {% endblock %}
