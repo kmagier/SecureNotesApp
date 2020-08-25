@@ -1,10 +1,11 @@
 from application import db, login
 from datetime import datetime
-from flask import redirect, url_for, current_app
+from flask import redirect, url_for, current_app, request
 import bcrypt
 from time import time
 from flask_login import UserMixin
 import jwt
+import uuid
 
 
 subscribed_notes = db.Table('subscribed_notes', 
@@ -23,6 +24,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(40), index=True, unique=True)
     email = db.Column(db.String(80), index=True, unique=True)
     password_hash = db.Column(db.String(256), index=False, unique=True)
+    avatar = db.Column(db.String(256), index=False, unique=False, nullable=True)
     about_me = db.Column(db.String(300))
     registered_date = db.Column(db.DateTime, default=datetime.now())
     last_seen = db.Column(db.DateTime, default=datetime.now())
@@ -32,7 +34,8 @@ class User(UserMixin, db.Model):
                                 secondaryjoin=(followers.c.followed_id == id),
                                 backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     is_admin = db.Column(db.Boolean, unique=False, default=False)
- 
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
     def __repr__(self):
         return f'<User {self.username}>'
     
@@ -45,6 +48,16 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=300):
         return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
         current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    # def upload_attachment(self, FileStorage: attachment):
+    #     filename_prefix = str(uuid.uuid4())
+    #     new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
+    #     path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
+    #     attachment.save(path_to_file)
+    #     note = Note(title=title, description=description, file_path=path_to_file, 
+    #                     org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=user.id)
+    #     db.session.add(note)
+
 
     @staticmethod
     def verify_reset_password_token(token):

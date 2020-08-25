@@ -17,7 +17,6 @@ login = LoginManager()
 def create_app(config_class=Config):
     app = Flask(__name__) 
     app.config.from_object(Config) 
-
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app) 
@@ -55,12 +54,13 @@ def create_app(config_class=Config):
             app.logger.addHandler(file_handler)
 
         app.logger.setLevel(logging.INFO)
-        app.logger.info('Microblog startup')
+        app.logger.info('Noteapp startup')
 
     return app
 
 from application.models.user import User
 from application.models.note import Note
+from application.models.post import Post
 
 
 

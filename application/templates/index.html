@@ -10,6 +10,34 @@
 		<p>
 			<i>Simple application to add and share short notes.</i>
 		</p>
+		<h1 style="text-align: center;">Announcements:</h1>
+		{% if current_user.is_admin %}
+		<div class="admin-add-post">
+			<a href="{{url_for('admin.admin_post')}}" class="btn btn-success btn-sm">Add post</a>
+		</div>
+		{% endif %}
+		
+		{% if posts %}
+		<div class="posts">
+			{% include "posts.html" %}
+		</div>
+		{% else %}
+		<div class="alert alert-info">
+			No posts available.</a>
+		</div>
+		{% endif %}
+
+		{% if prev_url or next_url %}
+		<div class="posts-pagination">
+			{% if prev_url %}
+			<a href="{{ prev_url }}">Newer posts</a>
+			{% endif %}
+			{% if next_url %}
+			<a href="{{ next_url }}" style="float: right;">Older posts</a>
+			{% endif %}
+		</div>
+		{% endif %}
+
 	</main>
 </div>
 {% endblock %}

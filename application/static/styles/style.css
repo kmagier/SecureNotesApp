@@ -3,7 +3,6 @@ body {
     max-height: auto;
 	margin-left: auto;
 	margin-right: auto;
-	padding-bottom: 20px;
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -77,7 +76,7 @@ article h3 {
 }
 
 article p {
-	color: red;
+	color: #004085;
 }
 
 table {
@@ -176,28 +175,56 @@ table {
     border: 1px solid #ba68c8;
     box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
 }
+.user-controls-container {
+    display: block;
+    margin: 5px 0px 5px 0px;
+    overflow: auto;
+}
+.user-profile-control {
+    float: right;
+    margin: 2px;
+}
+.test-class {
+    border: 1px solid red;
+    color: brown;
+}
 
 .user-profile {
     display: block;
+    margin-top: 3px;
     background-color: #e6f8ff;
     border: thin solid cornflowerblue;
     border-radius: 0.25rem;
+} 
+
+.user-profile-avatar {
+    margin: 5px 0px 5px 5px;
 }
 
-.user-profile-btns {
-    display: inline;
-    margin: 2px;
-    float: right;
+.user-profile-avatar img{
+    max-width: 150px;
+    height: auto;
+}
+.user-no-avatar-container {
+    border: 1px dashed black;
+    width: 100px;
+    height: 100px;
+}
+
+.user-no-avatar {
+    text-align: center;
+    width: 120px;
+    height: 120px;
+    padding: 20px;
+    -webkit-transform: rotate(-60deg);
 }
 
 .user-profile-info {
-    width: 100%;
     display: block;
+    padding-left: 5px;
     color: midnightblue;
     background-color: #cee6ff;
-    border: cornflowerblue;
-    border-style: solid none solid none;
-    border-width: thin;
+    border-top: 1px solid cornflowerblue;
 }
 
 div.user-profile > h1 {
@@ -214,27 +241,40 @@ div.user-profile-info > p {
 }
 
 #note-info-container {
-    margin: 2px 0px 0px 5px;
+    padding: 2px 0px 0px 5px;
     float: left;
     width: 45%;
 }
 
 #user-followers-container {
-    margin: 2px;
+    padding: 2px;
     width: 45%;
     overflow: hidden;
     text-align: right;
 }
 
+.user-about-me-container {
+    border-top: 1px solid cornflowerblue;
+    background-color: #cee6ff;
+    overflow: hidden;
+}
+
 .user-about-me {
+    padding-left: 5px;
     display: block;
     word-break: break-all;
-    margin: 5px;
+}
+
+.user-notes-list {
+    padding-left: 5px;
+    display: block;
+    border: cornflowerblue;
+    border-style: solid none none none;
+    border-width: thin;
 }
 
 .private-notes-info {
     display: block;
-    /* float: unset; */
     background-color: darkseagreen;
     border-style: solid;
     border-width: thin;
@@ -246,7 +286,6 @@ div.user-profile-info > p {
 
 .subscribed-notes-info {
     display: block;
-    /* float: unset; */
     background-color: #82b4bb;
     border-style: solid;
     border-width: thin;
@@ -258,7 +297,6 @@ div.user-profile-info > p {
 
 .public-notes-info {
     display: block;
-    /* float: unset; */
     background-color: #82b4bb;
     border-style: solid;
     border-width: thin;
@@ -266,7 +304,7 @@ div.user-profile-info > p {
     text-align: center;
     width: 500px;
     margin: auto; 
-}
+} 
 
 .admin-nav {
     margin: auto;
@@ -282,31 +320,12 @@ input#submit {
     margin: 10px 0px 0px 0px;
 }
 
-.user-notes-list {
-    width: 100%;
-    display: block;
-    color: midnightblue;
-    background-color: #cee6ff;
-    border: cornflowerblue;
-    border-style: solid none solid none;
-    border-width: thin;
-}
+
 
 .followers-box {
     width: 100%;
     display: block;
 }
-
-/* .follower-frame {
-    width: 509px;
-    display: inline-block;
-    border: rgb(107 108 255);
-    border-style: solid;
-    border-width: thin;
-    background-color: #ccedff;
-} */
-
-
 
 .followers {
     position: relative;
@@ -328,21 +347,129 @@ input#submit {
     margin: 1px;
     float: right;
 }
-/* .profile-edit-form {
-    width: 300px ;
-    margin: 0 auto;
-    background-color: cadetblue;
-    border-style: solid;
-    border-width: thin;
 
+.content-section {
+    background: #bfffea26;
+    padding: 5px 20px;
+    border: 1px solid #1e7e34;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  
+  .article-title {
+    color: #444444;
+  }
+  
+  a.article-title:hover {
+    color: #428bca;
+    text-decoration: none;
+  }
+  
+  .article-content {
+    white-space: pre-line;
+  }
+  
+  .article-img {
+    height: 65px;
+    width: 65px;
+    margin-right: 16px;
+  }
+  
+  .article-metadata {
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #117a8b
+  }
+  
+  .article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+  }
+
+  .posts {
+      display: block;
+  }
+
+  .admin-add-post {
+      max-width: 1024px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      margin-top: 5px;
+      margin-bottom: 5px;
+  }
+  
+  .posts-pagination {
+    border-top: 1px solid cornflowerblue;
+  }
+
+  .posts-control {
+      float: right;
+  }
+
+  .posts-control form {
+      display: inline;
+  }
+
+  .note-frame {
+      background-color: #effdff;
+    border-radius: 5px;
+    border: 1px solid black; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    overflow: hidden
+  }
+
+  .note-date {
+      padding-left: 5px;
+      border-bottom: 1px solid black;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background-color: #99f19e;
+
+  }
+  
+  .note-title {
+      display: inline-flex;
+      margin: 0px;
+      padding: 10px;
+      text-align: center;
+      max-width: 200px;
+      white-space: nowrap;
+
+  }
+
+  .note-control {
+      padding: 5px;
+      float: right;
+  }
+  .public-note-info{
+    padding-left: 5px;
+    border-bottom: 1px solid black;
+    background-color: #f9d7d7;
+  }
+
+  .public-note-date{
+  }
+  .public-note-owner{
+      float:right;
+      padding-right: 5px;
+
+  }
+
+  .public-note-frame {
+    background-color: #fff5f5;
+    border-radius: 5px;
+    border: 1px solid black; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    overflow: hidden
 }
 
-.profile-edit-form form{
-    text-align: center;
-    position: relative;
-
+.note-description {
+    border-top: 1px solid black;
+    padding: 10px;
 }
-.profile-edit-form label{
-    color: red; */
 
-/* } */
+  
+  

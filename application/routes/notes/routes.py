@@ -1,4 +1,4 @@
-from flask import (Flask, Blueprint, current_app, request, url_for, redirect, 
+from flask import (Flask, Blueprint, current_app, request, url_for, redirect, abort,
                     render_template, jsonify, send_file, flash, send_from_directory)
 from application import db
 import os
@@ -70,8 +70,11 @@ def download_file_public(file_hash):
 @bp.route('/private-notes', methods=["GET", "POST"])
 @login_required
 def private_notes():
-    private_notes = current_user.notes.order_by(Note.timestamp.desc()).all()
-    return render_template("private_notes.html", private_notes = private_notes)
+    page = request.args.get('page', 1, type=int)
+    private_notes = current_user.notes.order_by(Note.timestamp.desc()).paginate(page, 5, False)
+    next_url = url_for('notes.private_notes', page=private_notes.next_num) if private_notes.has_next else None
+    prev_url = url_for('notes.private_notes', page=private_notes.prev_num) if private_notes.has_prev else None
+    return render_template('private_notes.html', private_notes=private_notes.items, next_url=next_url, prev_url=prev_url)
 
 @bp.route('/private-notes/make-public/<int:note_id>', methods=["GET", "POST"])
 @login_required
@@ -82,7 +85,7 @@ def make_public(note_id):
         note.is_public = True
         db.session.commit()
         flash('Note added to public notes.', category='info')
-        return redirect(url_for('notes.private_notes'))   
+        return redirect(request.referrer)   
     else:
         return redirect(url_for('dashboard.index'), 403)
 
@@ -96,7 +99,7 @@ def delete_note(note_id):
             if note.file_path:
                 os.remove(note.file_path)
             db.session.delete(note)
-            db.session.commit()
+            db.session.commit() 
             response = jsonify('Note deleted')
             flash('Note deleted.', category='warning')   
         else:
@@ -158,7 +161,7 @@ def make_private(note_id):
         note.is_public = False
         db.session.commit()
         flash('Note changed to private.', category='info')
-        return redirect(url_for('notes.private_notes'))
+        return redirect(request.referrer)
     else:
         return redirect(url_for('dashboard.index'), 403)
 
@@ -168,6 +171,7 @@ def edit_note(note_id):
     title = 'Edit note'
     note = Note.query.get_or_404(note_id)
     form = NoteForm()
+    current_app.logger.debug(request.referrer)
     if form.validate_on_submit() and request.method == 'POST':
         if form.attachment.data is not None:
             attachment = request.files[form.attachment.name]
@@ -183,7 +187,7 @@ def edit_note(note_id):
         note.description = form.description.data
         db.session.commit()
         flash('Note edited successfully.', category='success')
-        return redirect(url_for('notes.private_notes'))
+        return redirect(request.referrer)
     form.title.data = note.title
     form.description.data = note.description
     return render_template('edit_note.html', form=form, title=title, note=note)
@@ -223,5 +227,20 @@ def unsubscribe_note(note_id):
 
 @bp.route('/public-notes', methods=["GET"])
 def public_notes():
-    notes = Note.query.filter_by(is_public=True).order_by(Note.timestamp.asc()).all()
-    return render_template('public_notes.html', notes=notes)     
+    page = request.args.get('page', 1, type=int)
+    notes = Note.query.filter_by(is_public=True).order_by(Note.timestamp.desc()).paginate(page, 5, False)
+    next_url = url_for('notes.public_notes', page=notes.next_num) if notes.has_next else None
+    prev_url = url_for('notes.public_notes', page=notes.prev_num) if notes.has_prev else None
+    return render_template('public_notes.html', notes=notes.items, next_url=next_url, prev_url=prev_url)
+
+
+@bp.route('/note/<int:note_id>', methods=['GET'])
+@login_required
+def note_detail(note_id):
+    note = Note.query.get_or_404(note_id)
+    if current_user.id == note.owner_id:
+        return render_template('note_detail.html', is_owner = True, note=note)
+    elif current_user.id != note.owner_id and note.is_public:
+        return render_template('note_detail.html', is_owner = False, note=note)
+    else:
+        abort(403)

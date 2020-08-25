@@ -17,6 +17,10 @@
             {{ form.about_me(placeholder="About me", class_="form-control", rows="10") }}
         </div>
         <div class="form-group">
+            {{ form.photo.label}}<br>
+            {{ form.photo(class_="form-control") }}
+        </div>
+        <div class="form-group">
             {{ form.submit(class_="btn btn-success") }}
         </div>
     </form>

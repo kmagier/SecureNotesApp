@@ -7,30 +7,29 @@
 </div>
 {% else %}
 {% for subscribed_note in subscribed_notes %}
-<div class="accordion" id="notesAccordion">
-    <div class="card">
-        <div class="card-header" id="heading{{subscribed_note.id}}">
-            <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
-                    data-target="#note_{{subscribed_note.id}}" aria-expanded="false"
-                    aria-controls="note_{{subscribed_note.id}}">
-                    {{subscribed_note.title}}
-                    <a href="{{url_for('main.user_profile', user_id=subscribed_note.owner.id)}}" class="btn btn-primary btn-sm float-right">{{subscribed_note.owner.username}}</a>
-                    {% if subscribed_note.attachment_hash %}
-                    <a href="{{url_for('notes.download_file_private', file_hash = subscribed_note.attachment_hash)}}"
-                        class="btn btn-outline-success btn-sm float-right">Download</a>
-                    {% endif %}
-                    <a href="{{url_for('notes.unsubscribe_note', note_id = subscribed_note.id)}}"
-                        class="btn btn-outline-primary btn-sm float-right">Unsubscribe note</a>
-            </h2>
-        </div>
-        <div id="note_{{subscribed_note.id}}" class="collapse" aria-labelledby="heading{{subscribed_note.id}}"
-            data-parent="#notesAccordion">
-            <div class="card-body">
-                {{subscribed_note.description}}
-            </div>
-        </div>
+<div class="public-note-frame">
+    <div class="public-note-info">
+        <span class="public-note-date">
+            <small>Added: {{subscribed_note.timestamp.date()}} {{subscribed_note.timestamp.time().isoformat(timespec='minutes')}}</small>
+        </span>
+        <span class="public-note-owner">
+            <small>Owner:  <b><a href="{{url_for('main.user_profile', user_id=subscribed_note.owner.id)}}">{{subscribed_note.owner.username}}</a></b></small>
+        </span>
     </div>
+    <div class="note-title">{{ subscribed_note.title }}</div>
+    <span class="note-control">
+        {% if subscribed_note.attachment_hash %}
+        <a href="{{url_for('notes.download_file_public', file_hash = subscribed_note.attachment_hash)}}"
+            class="btn btn-outline-success btn-sm">Download</a>
+        {% endif %}
+        {% if current_user.is_authenticated and not current_user.id == subscribed_note.owner_id and subscribed_note not in current_user.subscribed_notes %}
+        <a href="{{url_for('notes.subscribe_note', note_id = subscribed_note.id)}}"
+            class="btn btn-outline-primary btn-sm">Subscribe note</a>
+        {% elif subscribed_note in current_user.subscribed_notes %}
+        <a href="{{url_for('notes.unsubscribe_note', note_id = subscribed_note.id)}}"
+            class="btn btn-outline-primary btn-sm">Unsubscribe note</a>
+        {% endif %}
+    </span>
 </div>
 {% endfor %}
 {% endif %}

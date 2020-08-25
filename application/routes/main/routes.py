@@ -3,9 +3,11 @@ from flask import Flask, Blueprint, render_template, redirect, url_for, session,
 from flask_login import current_user, login_required
 from application.models.user import User
 from application.models.note import Note
+from application.models.post import Post
 from application.forms.forms import EditProfileForm
 from application import db
 import os
+import uuid
 from application.routes.main import bp
 
 @bp.before_app_request
@@ -17,15 +19,12 @@ def before_request():
 @bp.route('/index')
 @bp.route('/')
 def index():
-    # session_id = request.cookies.get('session_id', '')
-    # current_app.logger.debug(session_id)
-    # username = get_username(session_id)
-    # current_app.logger.debug(username)
-    # if not username:
-    #     session["logged_in"] = False
-    # else:
-    #     session["logged_in"] = True
-    return render_template('index.html')
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, 2, False)
+    next_url = url_for('main.index', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('main.index', page=posts.prev_num) if posts.has_prev else None
+    current_app.logger.debug(posts)
+    return render_template('index.html', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @bp.route('/user/<int:user_id>')
 @login_required
@@ -42,7 +41,10 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
-        current_app.logger.debug(len(form.about_me.data))
+        photo = form.photo.data
+        filename = str(uuid.uuid4()) + "." + photo.filename.split('.')[-1]
+        photo.save(os.path.join(current_app.static_folder, 'avatars', filename))
+        current_user.avatar = os.path.join('avatars', filename)
         db.session.commit() 
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':
@@ -55,14 +57,14 @@ def edit_profile():
 def follow(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        flash('User {} not found.'.format(user.username))
+        flash(f'User {user.username} not found.', category='warning')
         return redirect(url_for('main.index'))
     if user == current_user:
-        flash('You cannot follow yourself!')
+        flash('You cannot follow yourself!', category='warning')
         return redirect(request.referrer)
     current_user.follow(user)
     db.session.commit()
-    flash('You are following {}!'.format(user.username))
+    flash(f'You are following {user.username}!', category='info')
     return redirect(request.referrer)
 
 @bp.route('/unfollow/<int:user_id>', methods=['GET', 'POST'])
@@ -70,14 +72,14 @@ def follow(user_id):
 def unfollow(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        flash('User {} not found.'.format(user.username))
+        flash(f'User {user.username} not found.', category='warning')
         return redirect(url_for('main.index'))
     if user == current_user:
-        flash('You cannot unfollow yourself!')
+        flash('You cannot unfollow yourself!', category='warning')
         return redirect(request.referrer)
     current_user.unfollow(user)
     db.session.commit()
-    flash('You are not following {}.'.format(user.username))
+    flash(f'You are not following {user.username}.', category='info')
     return redirect(request.referrer)
 
 @bp.route('/user/<int:user_id>/notes')
