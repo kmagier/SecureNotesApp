@@ -8,6 +8,7 @@ import jwt
 import uuid
 
 
+
 subscribed_notes = db.Table('subscribed_notes', 
                 db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
                 db.Column('note_id', db.Integer, db.ForeignKey('notes.id'))
@@ -48,15 +49,6 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=300):
         return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
         current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
-
-    # def upload_attachment(self, FileStorage: attachment):
-    #     filename_prefix = str(uuid.uuid4())
-    #     new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-    #     path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-    #     attachment.save(path_to_file)
-    #     note = Note(title=title, description=description, file_path=path_to_file, 
-    #                     org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=user.id)
-    #     db.session.add(note)
 
 
     @staticmethod

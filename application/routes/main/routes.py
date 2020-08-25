@@ -26,6 +26,7 @@ def index():
     current_app.logger.debug(posts)
     return render_template('index.html', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
+
 @bp.route('/user/<int:user_id>')
 @login_required
 def user_profile(user_id):

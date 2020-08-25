@@ -8,10 +8,12 @@ import random, string, os
 from .forms import AdminEditProfileForm, AdminEditNoteForm, AdminPostForm
 from application.routes.admin import bp
 from functools import wraps
+
 import uuid
 
 
 DIR_PATH = 'static/files/'
+
 
 def admin_required(f):
     @wraps(f)
@@ -32,6 +34,7 @@ def admin_dashboard():
 @login_required
 @admin_required
 def admin_user_list():
+
     users = User.query.order_by(User.registered_date.asc()).all()
     return render_template('admin/admin_user_manager.html', users=users)
 
@@ -111,6 +114,7 @@ def admin_note_delete(note_id):
     return render_template('admin/admin_delete.html', form=form, title='Delete note', note=note)
 
 
+<<<<<<< HEAD
 @bp.route('/post', methods=['GET', 'POST'])
 @login_required
 @admin_required

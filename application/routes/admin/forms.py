@@ -32,3 +32,4 @@ class AdminPostForm(FlaskForm):
     title = StringField('Title', validators=[Length(min=1, max=150)])
     content = TextAreaField('Content', validators=[Length(min=1, max=150)], render_kw={"rows": 4})
     submit = SubmitField('Submit')
+

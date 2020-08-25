@@ -85,7 +85,7 @@ def make_public(note_id):
         note.is_public = True
         db.session.commit()
         flash('Note added to public notes.', category='info')
-        return redirect(request.referrer)   
+        return redirect(request.referrer)
     else:
         return redirect(url_for('dashboard.index'), 403)
 
@@ -99,7 +99,7 @@ def delete_note(note_id):
             if note.file_path:
                 os.remove(note.file_path)
             db.session.delete(note)
-            db.session.commit() 
+            db.session.commit()
             response = jsonify('Note deleted')
             flash('Note deleted.', category='warning')   
         else:
@@ -171,7 +171,6 @@ def edit_note(note_id):
     title = 'Edit note'
     note = Note.query.get_or_404(note_id)
     form = NoteForm()
-    current_app.logger.debug(request.referrer)
     if form.validate_on_submit() and request.method == 'POST':
         if form.attachment.data is not None:
             attachment = request.files[form.attachment.name]
@@ -227,6 +226,7 @@ def unsubscribe_note(note_id):
 
 @bp.route('/public-notes', methods=["GET"])
 def public_notes():
+<<<<<<< HEAD
     page = request.args.get('page', 1, type=int)
     notes = Note.query.filter_by(is_public=True).order_by(Note.timestamp.desc()).paginate(page, 5, False)
     next_url = url_for('notes.public_notes', page=notes.next_num) if notes.has_next else None

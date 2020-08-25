@@ -47,6 +47,7 @@ class NoteForm(FlaskForm):
                 if request.files[self.attachment.name].filename.split('.')[-1] not in ALLOWED_NOTE_EXTENSIONS:
                     raise ValidationError('Extension not supported.')
 
+
 class PasswordChangeForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     new_password = PasswordField('New password', validators=[DataRequired(), Length(min=1)])
@@ -86,4 +87,4 @@ class ResetPasswordForm(FlaskForm):
     def validate_password(self, field):
         if not re.match(r"^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$])[\w\d@#$]{8,}$", field.data):
             raise ValidationError('Password is too weak, password must contain at least one digit, one uppercase letter, one lowercase letter and one special character(@,#,$).')
-    
+

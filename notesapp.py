@@ -8,4 +8,5 @@ if not os.path.exists(os.path.join(app.static_folder, 'files')):
     
 if not os.path.exists(os.path.join(app.static_folder, 'avatars')):
     os.mkdir(os.path.join(app.static_folder, 'avatars'))
+
 # app.static_folder ='static'
