@@ -226,7 +226,6 @@ def unsubscribe_note(note_id):
 
 @bp.route('/public-notes', methods=["GET"])
 def public_notes():
-<<<<<<< HEAD
     page = request.args.get('page', 1, type=int)
     notes = Note.query.filter_by(is_public=True).order_by(Note.timestamp.desc()).paginate(page, 5, False)
     next_url = url_for('notes.public_notes', page=notes.next_num) if notes.has_next else None
