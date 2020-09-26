@@ -1,4 +1,5 @@
 from application import db, login
+import os
 from datetime import datetime
 from flask import redirect, url_for, current_app, request
 import bcrypt
@@ -49,14 +50,21 @@ class User(UserMixin, db.Model):
         return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
         current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
-    # def upload_attachment(self, FileStorage: attachment):
-    #     filename_prefix = str(uuid.uuid4())
-    #     new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-    #     path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-    #     attachment.save(path_to_file)
-    #     note = Note(title=title, description=description, file_path=path_to_file, 
-    #                     org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=user.id)
-    #     db.session.add(note)
+    def add_note(self, title, description, attachment=False):
+        from application.models.note import Note
+        if attachment:
+            current_app.logger.debug("Inside add note with attachment")
+            filename_prefix = str(uuid.uuid4())
+            new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
+            path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
+            attachment.save(path_to_file)
+            note = Note(title=title, description=description, file_path=path_to_file, 
+                        org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=self.id)
+        else:
+            current_app.logger.debug("Inside add note")
+            note = Note(title=title, description=description, owner_id=self.id)
+        db.session.add(note)
+        db.session.commit()
 
 
     @staticmethod

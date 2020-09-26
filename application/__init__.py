@@ -56,11 +56,19 @@ def create_app(config_class=Config):
         app.logger.setLevel(logging.INFO)
         app.logger.info('Noteapp startup')
 
+    from application.models.user import User
+    from application.models.note import Note
+    from application.models.post import Post
+
+    @app.shell_context_processor
+    def make_shell_context():
+        return {'db': db, 'User': User, 'Post': Post, 'Note': Note}
+
     return app
 
-from application.models.user import User
-from application.models.note import Note
-from application.models.post import Post
+# from application.models.user import User
+# from application.models.note import Note
+# from application.models.post import Post
 
 
 

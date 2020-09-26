@@ -3,7 +3,7 @@
 {% block content %}
 <div class="content">
     <form method="POST" enctype="multipart/form-data">
-        <h2>{{ title}} </h2>
+        <h2>{{ title }} </h2>
         {% if user %}
         <div class="alert alert-danger">
             Are you sure, you want to delete user: <b>{{ user.username }}</b> with ID: <b>{{ user.id }}</b> ? All user

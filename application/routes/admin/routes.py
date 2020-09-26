@@ -80,18 +80,12 @@ def admin_note_edit(note_id):
     if request.method == 'POST' and form.validate_on_submit():
         if form.attachment.data:
             attachment = request.files[form.attachment.name]
-            if(len(attachment.filename) > 0): 
-                filename_prefix = str(uuid.uuid4())  
-                new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-                attachment.save(path_to_file)   
-                note.attachment_hash = new_filename
-                note.file_path = path_to_file
-                note.org_attachment_filename = attachment.filename
-        note.title = form.title.data
-        note.description = form.description.data
-        db.session.commit()
-        return redirect(url_for('admin.admin_notes_list'))
+            note.edit_note(title=form.title.data, description=form.description.data, attachment=attachment)
+            flash('File uploaded successfully.', category='success')
+        else:
+            note.edit_note(title=form.title.data, description=form.description.data)
+            flash('Note updated.', category='success')
+        return redirect(request.referrer)
     form.title.data = note.title
     form.description.data = note.description
     return render_template('admin/admin_note.html', form=form, title='Admin note edit', note=note)
