@@ -20,7 +20,6 @@ class Note(db.Model):
 
 
     def edit_note(self, title=None, description=None, attachment=None):
-        current_app.logger.debug("inside edit_note of Note")
         self.title = title
         self.description = description
         if attachment:
