@@ -12,7 +12,8 @@ DB_URI = DB_TYPE + "+" + DB_CONNECTOR +'://' + DB_USERNAME +':' + DB_PASSWORD + 
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'some-random-secret-key'
-    DEBUG = True
+    DEBUG = False
+    TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or DB_URI   
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
@@ -21,4 +22,13 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FILE_UPLOADS = '/application/static/files'
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+class TestingConfig(Config):
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+
     

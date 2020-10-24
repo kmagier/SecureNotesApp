@@ -6,16 +6,12 @@ from application import create_app, db
 from application.models.user import User
 from application.models.post import Post
 from application.models.note import Note
-from config import Config
+import config
 
-
-class TestConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
 
 class UserModelCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app(TestConfig)
+        self.app = create_app(config_class=config.TestingConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
