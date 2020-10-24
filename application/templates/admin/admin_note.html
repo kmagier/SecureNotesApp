@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
 
+
 {% block content %}
+{% include "includes/flash_info.html" %}
 <div class="form-group purple-border">
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {% for error in form.description.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-        <h2>{{ title }} </h2>
+        <h3>{{ title }}</h3>
         <div class="card">
             <div class="card-header">
                 {{ form.title(placeholder="Title")}}

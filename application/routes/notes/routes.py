@@ -23,19 +23,9 @@ def add_note():
         description = form.description.data
         attachment = request.files[form.attachment.name]
         if attachment:
-            current_app.logger.debug(current_app.root_path) 
-            current_app.logger.debug(f'Attachment inside {attachment}')
-            filename_prefix = str(uuid.uuid4())
-            new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-            path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-            attachment.save(path_to_file)
-            note = Note(title=title, description=description, file_path=path_to_file, 
-                        org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=user.id)
-            db.session.add(note)
+            user.add_note(title=title, description=description, attachment=attachment)
         else:
-            note = Note(title=title, description=description, owner_id=user.id)
-            db.session.add(note)
-        db.session.commit()
+            user.add_note(title=title, description=description)
         flash('Note added successfully', category='success')
         return redirect(request.url)
     return render_template("add_note.html", form=form)
@@ -133,19 +123,9 @@ def upload_note_file(note_id):
         note = Note.query.filter_by(id=note_id).first()
         if note.owner_id == user.id:
             note_file = request.files['Note']
-            if(len(note_file.filename) > 0):
-                filename_prefix = str(uuid.uuid4())
-                new_filename = filename_prefix + '.' + note_file.filename.split('.')[-1]
-                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-                note_file.save(path_to_file)   
-                note.attachment_hash = new_filename
-                note.file_path = path_to_file
-                note.org_attachment_filename = note_file.filename
-                response = jsonify("File added")
-                db.session.commit()
-                flash('File uploaded successfully.', category='success')
-            else:
-                response = jsonify("Error: Empty content of file.")
+            note.upload_attachment(note_file)
+            response = jsonify("File added.")
+            flash('File uploaded successfully.', category='success')
         else:
             response = jsonify('Article not found')
     else:
@@ -171,20 +151,15 @@ def edit_note(note_id):
     title = 'Edit note'
     note = Note.query.get_or_404(note_id)
     form = NoteForm()
+    if current_user.id != note.owner_id:
+        abort(403)
     if form.validate_on_submit() and request.method == 'POST':
-        if form.attachment.data is not None:
+        if form.attachment.data:
             attachment = request.files[form.attachment.name]
-            if(len(attachment.filename) > 0):
-                filename_prefix = str(uuid.uuid4())
-                new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
-                path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
-                attachment.save(path_to_file)   
-                note.attachment_hash = new_filename
-                note.file_path = path_to_file
-                note.org_attachment_filename = attachment.filename
-        note.title = form.title.data
-        note.description = form.description.data
-        db.session.commit()
+            note.edit_note(title=form.title.data, description=form.description.data, 
+                            attachment=attachment)
+        else:
+            note.edit_note(title=form.title.data, description=form.description.data)
         flash('Note edited successfully.', category='success')
         return redirect(request.referrer)
     form.title.data = note.title

@@ -1,4 +1,5 @@
 from application import db, login
+import os
 from datetime import datetime
 from flask import redirect, url_for, current_app, request
 import bcrypt
@@ -49,6 +50,20 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=300):
         return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
         current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    def add_note(self, title, description, attachment=False):
+        from application.models.note import Note
+        if attachment:
+            filename_prefix = str(uuid.uuid4())
+            new_filename = filename_prefix + '.' + attachment.filename.split('.')[-1]
+            path_to_file = os.path.join(current_app.static_folder, 'files', new_filename)
+            attachment.save(path_to_file)
+            note = Note(title=title, description=description, file_path=path_to_file, 
+                        org_attachment_filename=attachment.filename, attachment_hash = new_filename, owner_id=self.id)
+        else:
+            note = Note(title=title, description=description, owner_id=self.id)
+        db.session.add(note)
+        db.session.commit()
 
 
     @staticmethod

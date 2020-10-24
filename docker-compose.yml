@@ -8,8 +8,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./application:/notesapp/application
-      - .:/notesapp
+      - type: bind
+        source: ./application
+        target: /notesapp/application
+      - type: bind
+        source: ./tests
+        target: /notesapp/tests
     env_file: 
         - .env
     depends_on: 
@@ -24,5 +28,7 @@ services:
         - 5432:5432
     env_file: 
         - .env
+  queue:
+    image: redis:alpine
 volumes:
   pgdata:
