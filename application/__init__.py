@@ -5,8 +5,9 @@ from flask import Flask, request, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from redis import Redis
+import rq
 from application.extensions import mail
-# from flask_mail import Mail
 import config
 
 db = SQLAlchemy() 
@@ -14,12 +15,14 @@ migrate = Migrate()
 login = LoginManager()
 # mail = Mail()
  
-def create_app(config_class=config.Config):
-    app = Flask(__name__) 
+def create_app(config_class=config.DevelopmentConfig):
+    app = Flask(__name__)  
     app.config.from_object(config_class) 
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app) 
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('securenotesapp-tasks', connection=app.redis)
     mail.init_app(app)
 
     from application.routes.errors import bp as errors_bp

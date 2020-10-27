@@ -4,7 +4,8 @@ services:
     build:
       context: .
       dockerfile: ./Docker/app/Dockerfile
-    command: gunicorn --bind 0.0.0.0:5000 --certfile /notesapp/CERT.crt --keyfile /notesapp/KEY.key notesapp:app
+    # command: gunicorn --bind 0.0.0.0:5000 --certfile /notesapp/CERT.crt --keyfile /notesapp/KEY.key notesapp:app
+    command: flask run --cert=CERT.crt --key=KEY.key
     ports:
       - "5000:5000"
     volumes:
@@ -30,5 +31,15 @@ services:
         - .env
   queue:
     image: redis:alpine
+  queue_worker:
+    build:
+      context: .
+      dockerfile: ./Docker/queue_worker/Dockerfile
+    # command: gunicorn --bind 0.0.0.0:5000 --certfile /notesapp/CERT.crt --keyfile /notesapp/KEY.key notesapp:app
+    command: rq worker -u redis://queue:6379 securenotesapp-tasks
+    env_file: 
+        - .env
+    depends_on: 
+      - queue
 volumes:
   pgdata:

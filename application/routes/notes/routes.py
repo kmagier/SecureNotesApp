@@ -168,7 +168,7 @@ def edit_note(note_id):
 
 @bp.route('/subscribed-notes', methods=['GET'])
 @login_required
-def subscribed_notes():
+def subscribed_notes(): 
     subscribed_notes = current_user.subscribed_notes
     return render_template('subscribed_notes.html', subscribed_notes=subscribed_notes)
 

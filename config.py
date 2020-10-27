@@ -11,10 +11,11 @@ DB_URI = DB_TYPE + "+" + DB_CONNECTOR +'://' + DB_USERNAME +':' + DB_PASSWORD + 
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'some-random-secret-key'
-    DEBUG = False
+    DEBUG = True
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or DB_URI   
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or True
@@ -23,7 +24,7 @@ class Config(object):
     FILE_UPLOADS = '/application/static/files'
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    Testing = True
 
 class TestingConfig(Config):
     DEBUG = True
